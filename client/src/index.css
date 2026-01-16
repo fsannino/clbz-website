@@ -1,0 +1,190 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Rajdhani", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --radius-sm: 0px;
+  --radius-md: 2px;
+  --radius-lg: 4px;
+  --radius-xl: 8px;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* Design Philosophy: Industrial Brutalism Refined - CollabZ */
+:root {
+  /* CollabZ Brand Colors */
+  --industrial-graphite: #0B0D10;
+  --technical-dark-gray: #1F2933;
+  --technical-light: #F9FAFB;
+  --accent-red: #E60000;
+  
+  /* Colors - Industrial & Precise */
+  --primary: #E60000; /* CollabZ Red */
+  --primary-foreground: #FFFFFF;
+  
+  --background: #F9FAFB; /* Technical Light - Páginas internas, Artigos, Textos longos */
+  --foreground: #0B0D10; /* Industrial Graphite */
+  
+  --card: #1F2933; /* Technical Dark Gray - Cards, Blocos de serviço */
+  --card-foreground: #F9FAFB; /* Technical Light text on dark cards */
+  
+  --popover: #1F2933; /* Technical Dark Gray */
+  --popover-foreground: #F9FAFB;
+  
+  --secondary: #1F2933; /* Technical Dark Gray - Seções alternadas */
+  --secondary-foreground: #0B0D10;
+  
+  --muted: #1F2933; /* Technical Dark Gray */
+  --muted-foreground: #F9FAFB;
+  
+  --accent: #1F2933; /* Technical Dark Gray */
+  --accent-foreground: #F9FAFB;
+  
+  --destructive: #990000;
+  --destructive-foreground: #FFFFFF;
+  
+  --border: #E5E7EB;
+  --input: #F3F4F6;
+  --ring: #E60000;
+  
+  --radius: 0px; /* Sharp edges for industrial look */
+
+  /* Charts */
+  --chart-1: #E60000;
+  --chart-2: #333333;
+  --chart-3: #666666;
+  --chart-4: #999999;
+  --chart-5: #CCCCCC;
+
+  /* Sidebar */
+  --sidebar: #F9FAFB;
+  --sidebar-foreground: #0B0D10;
+  --sidebar-primary: #E60000;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #E5E7EB;
+  --sidebar-accent-foreground: #0B0D10;
+  --sidebar-border: #E5E7EB;
+  --sidebar-ring: #E60000;
+}
+
+.dark {
+  /* CollabZ Dark Theme */
+  --primary: #E60000;
+  --primary-foreground: #FFFFFF;
+  
+  --background: #0B0D10; /* Industrial Graphite */
+  --foreground: #F9FAFB; /* Technical Light */
+  
+  --card: #1F2933; /* Technical Dark Gray */
+  --card-foreground: #F9FAFB;
+  
+  --popover: #1F2933;
+  --popover-foreground: #F9FAFB;
+  
+  --secondary: #1F2933;
+  --secondary-foreground: #F9FAFB;
+  
+  --muted: #1F2933;
+  --muted-foreground: #F9FAFB;
+  
+  --accent: #1F2933;
+  --accent-foreground: #F9FAFB;
+  
+  --destructive: #F56565;
+  --destructive-foreground: #FFFFFF;
+  
+  --border: #1F2933;
+  --input: #1F2933;
+  --ring: #E60000;
+  
+  --chart-1: #E60000;
+  --chart-2: #CCCCCC;
+  --chart-3: #999999;
+  --chart-4: #666666;
+  --chart-5: #333333;
+
+  --sidebar: #0B0D10;
+  --sidebar-foreground: #F9FAFB;
+  --sidebar-primary: #E60000;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #1F2933;
+  --sidebar-accent-foreground: #F9FAFB;
+  --sidebar-border: #1F2933;
+  --sidebar-ring: #E60000;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight;
+  }
+  .font-mono {
+    @apply tracking-wide;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  @media (min-width: 1400px) {
+    .container {
+      max-width: 1400px;
+    }
+  }
+
+  /* Industrial Grid Lines */
+  .grid-lines {
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
+                      linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+    mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  }
+}
