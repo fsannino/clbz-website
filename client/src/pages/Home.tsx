@@ -1,3 +1,4 @@
+import { useAuth } from "@/_core/hooks/useAuth";
 import Layout from "@/components/layout/Layout";
 import { ArrowRight, BarChart3, Cpu, Layers, Users, Factory, Building2, ShieldCheck, Zap, Award, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
