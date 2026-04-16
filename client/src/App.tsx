@@ -10,6 +10,7 @@ import Servicos from "./pages/Servicos";
 import Metodologia from "./pages/Metodologia";
 import Educacao from "./pages/Educacao";
 import Insights from "./pages/Insights";
+import InsightArticle from "./pages/InsightArticle";
 import Parcerias from "./pages/Parcerias";
 import Contato from "./pages/Contato";
 
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/metodologia" component={Metodologia} />
       <Route path="/educacao" component={Educacao} />
       <Route path="/insights" component={Insights} />
+      <Route path="/insights/:slug" component={InsightArticle} />
       <Route path="/parcerias" component={Parcerias} />
       <Route path="/contato" component={Contato} />
       {/* Redirects from old routes */}
