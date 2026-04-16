@@ -5,27 +5,31 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
-import Solutions from "./pages/Solutions";
-import Industries from "./pages/Industries";
+import Sobre from "./pages/Sobre";
+import Servicos from "./pages/Servicos";
+import Metodologia from "./pages/Metodologia";
+import Educacao from "./pages/Educacao";
 import Insights from "./pages/Insights";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
+import Parcerias from "./pages/Parcerias";
+import Contato from "./pages/Contato";
+
 function Router() {
-  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/solutions" component={Solutions} />
-      <Route path="/industries" component={Industries} />
+      <Route path="/sobre" component={Sobre} />
+      <Route path="/servicos" component={Servicos} />
+      <Route path="/metodologia" component={Metodologia} />
+      <Route path="/educacao" component={Educacao} />
       <Route path="/insights" component={Insights} />
-      <Route path="/about" component={About} />
-      <Route path="/contact" component={Contact} />
-      
-      {/* Sub-routes for solutions (redirect to main solutions page for now or specific sections) */}
-      <Route path="/solutions/:slug" component={Solutions} />
-      
+      <Route path="/parcerias" component={Parcerias} />
+      <Route path="/contato" component={Contato} />
+      {/* Redirects from old routes */}
+      <Route path="/about" component={Sobre} />
+      <Route path="/solutions" component={Servicos} />
+      <Route path="/contact" component={Contato} />
+      <Route path="/industries" component={Servicos} />
       <Route path="/404" component={NotFound} />
-      {/* Final fallback route */}
       <Route component={NotFound} />
     </Switch>
   );

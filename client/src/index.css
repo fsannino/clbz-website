@@ -1,17 +1,18 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Inter", sans-serif;
-  --font-display: "Rajdhani", sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-display: "DM Serif Display", Georgia, serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --radius-sm: 0px;
-  --radius-md: 2px;
-  --radius-lg: 4px;
-  --radius-xl: 8px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -47,107 +48,109 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* Design Philosophy: Industrial Brutalism Refined - CollabZ */
+/* collab:Z Brand System */
 :root {
-  /* CollabZ Brand Colors */
-  --industrial-graphite: #0B0D10;
-  --technical-dark-gray: #1F2933;
-  --technical-light: #F9FAFB;
-  --accent-red: #E60000;
-  
-  /* Colors - Industrial & Precise */
-  --primary: #E60000; /* CollabZ Red */
+  /* Brand Colors */
+  --navy: #0B3D5C;
+  --navy-dark: #072A40;
+  --teal: #1A6E8E;
+  --teal-light: #2A8EAE;
+  --gold: #F7A823;
+  --gold-light: #FBBF4A;
+  --slate: #1E2D3D;
+  --cream: #F0EDE8;
+  --gray-medium: #4A5568;
+  --gray-light-val: #94A3B8;
+
+  --primary: #0B3D5C;
   --primary-foreground: #FFFFFF;
-  
-  --background: #F9FAFB; /* Technical Light - Páginas internas, Artigos, Textos longos */
-  --foreground: #0B0D10; /* Industrial Graphite */
-  
-  --card: #1F2933; /* Technical Dark Gray - Cards, Blocos de serviço */
-  --card-foreground: #F9FAFB; /* Technical Light text on dark cards */
-  
-  --popover: #1F2933; /* Technical Dark Gray */
-  --popover-foreground: #F9FAFB;
-  
-  --secondary: #1F2933; /* Technical Dark Gray - Seções alternadas */
-  --secondary-foreground: #0B0D10;
-  
-  --muted: #1F2933; /* Technical Dark Gray */
-  --muted-foreground: #F9FAFB;
-  
-  --accent: #1F2933; /* Technical Dark Gray */
-  --accent-foreground: #F9FAFB;
-  
-  --destructive: #990000;
+
+  --background: #FFFFFF;
+  --foreground: #1E2D3D;
+
+  --card: #FFFFFF;
+  --card-foreground: #1E2D3D;
+
+  --popover: #FFFFFF;
+  --popover-foreground: #1E2D3D;
+
+  --secondary: #F0EDE8;
+  --secondary-foreground: #1E2D3D;
+
+  --muted: #F5F6F8;
+  --muted-foreground: #4A5568;
+
+  --accent: #1A6E8E;
+  --accent-foreground: #FFFFFF;
+
+  --destructive: #E05040;
   --destructive-foreground: #FFFFFF;
-  
-  --border: #E5E7EB;
-  --input: #F3F4F6;
-  --ring: #E60000;
-  
-  --radius: 0px; /* Sharp edges for industrial look */
 
-  /* Charts */
-  --chart-1: #E60000;
-  --chart-2: #333333;
-  --chart-3: #666666;
-  --chart-4: #999999;
-  --chart-5: #CCCCCC;
+  --border: #E2E8F0;
+  --input: #F5F6F8;
+  --ring: #1A6E8E;
 
-  /* Sidebar */
-  --sidebar: #F9FAFB;
-  --sidebar-foreground: #0B0D10;
-  --sidebar-primary: #E60000;
+  --radius: 8px;
+
+  --chart-1: #0B3D5C;
+  --chart-2: #1A6E8E;
+  --chart-3: #F7A823;
+  --chart-4: #2A8EAE;
+  --chart-5: #FBBF4A;
+
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1E2D3D;
+  --sidebar-primary: #0B3D5C;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #E5E7EB;
-  --sidebar-accent-foreground: #0B0D10;
-  --sidebar-border: #E5E7EB;
-  --sidebar-ring: #E60000;
+  --sidebar-accent: #F0EDE8;
+  --sidebar-accent-foreground: #1E2D3D;
+  --sidebar-border: #E2E8F0;
+  --sidebar-ring: #1A6E8E;
 }
 
 .dark {
-  /* CollabZ Dark Theme */
-  --primary: #E60000;
+  --primary: #2A8EAE;
   --primary-foreground: #FFFFFF;
-  
-  --background: #0B0D10; /* Industrial Graphite */
-  --foreground: #F9FAFB; /* Technical Light */
-  
-  --card: #1F2933; /* Technical Dark Gray */
-  --card-foreground: #F9FAFB;
-  
-  --popover: #1F2933;
-  --popover-foreground: #F9FAFB;
-  
-  --secondary: #1F2933;
-  --secondary-foreground: #F9FAFB;
-  
-  --muted: #1F2933;
-  --muted-foreground: #F9FAFB;
-  
-  --accent: #1F2933;
-  --accent-foreground: #F9FAFB;
-  
-  --destructive: #F56565;
-  --destructive-foreground: #FFFFFF;
-  
-  --border: #1F2933;
-  --input: #1F2933;
-  --ring: #E60000;
-  
-  --chart-1: #E60000;
-  --chart-2: #CCCCCC;
-  --chart-3: #999999;
-  --chart-4: #666666;
-  --chart-5: #333333;
 
-  --sidebar: #0B0D10;
-  --sidebar-foreground: #F9FAFB;
-  --sidebar-primary: #E60000;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #1F2933;
-  --sidebar-accent-foreground: #F9FAFB;
-  --sidebar-border: #1F2933;
-  --sidebar-ring: #E60000;
+  --background: #072A40;
+  --foreground: #F5F6F8;
+
+  --card: #0B3D5C;
+  --card-foreground: #F5F6F8;
+
+  --popover: #0B3D5C;
+  --popover-foreground: #F5F6F8;
+
+  --secondary: #1E2D3D;
+  --secondary-foreground: #F5F6F8;
+
+  --muted: #1E2D3D;
+  --muted-foreground: #94A3B8;
+
+  --accent: #1A6E8E;
+  --accent-foreground: #FFFFFF;
+
+  --destructive: #E05040;
+  --destructive-foreground: #FFFFFF;
+
+  --border: #1E2D3D;
+  --input: #1E2D3D;
+  --ring: #F7A823;
+
+  --chart-1: #F7A823;
+  --chart-2: #2A8EAE;
+  --chart-3: #0B3D5C;
+  --chart-4: #FBBF4A;
+  --chart-5: #1A6E8E;
+
+  --sidebar: #072A40;
+  --sidebar-foreground: #F5F6F8;
+  --sidebar-primary: #F7A823;
+  --sidebar-primary-foreground: #072A40;
+  --sidebar-accent: #0B3D5C;
+  --sidebar-accent-foreground: #F5F6F8;
+  --sidebar-border: #1E2D3D;
+  --sidebar-ring: #F7A823;
 }
 
 @layer base {
@@ -156,12 +159,11 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    line-height: 1.7;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-bold tracking-tight;
-  }
-  .font-mono {
-    @apply tracking-wide;
+    @apply font-display font-bold;
+    line-height: 1.2;
   }
 }
 
@@ -173,18 +175,68 @@
     padding-left: 1.5rem;
     padding-right: 1.5rem;
   }
-  
-  @media (min-width: 1400px) {
+
+  @media (min-width: 1280px) {
     .container {
-      max-width: 1400px;
+      max-width: 1200px;
     }
   }
 
-  /* Industrial Grid Lines */
-  .grid-lines {
-    background-size: 40px 40px;
-    background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
-                      linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-    mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  /* Section utilities */
+  .section-tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.75rem;
   }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    color: var(--navy);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+    color: var(--gray-medium);
+    max-width: 36rem;
+    margin-bottom: 3rem;
+  }
+
+  /* Gold accent bar */
+  .gold-bar {
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--teal), var(--gold));
+  }
+
+  /* Pillar card top borders */
+  .pillar-gestao { border-top: 4px solid var(--navy); }
+  .pillar-estrategia { border-top: 4px solid var(--teal); }
+  .pillar-operacao { border-top: 4px solid var(--gold); }
+
+  /* Training badges */
+  .badge-collabz { background: rgba(26,110,142,0.08); color: var(--teal); }
+  .badge-lamarsh { background: rgba(247,168,35,0.1); color: #c48500; }
+  .badge-scrumstudy { background: rgba(46,125,50,0.08); color: #2E7D32; }
+}
+
+@layer utilities {
+  .bg-navy { background-color: var(--navy); }
+  .bg-navy-dark { background-color: var(--navy-dark); }
+  .bg-teal { background-color: var(--teal); }
+  .bg-gold { background-color: var(--gold); }
+  .bg-cream { background-color: var(--cream); }
+  .bg-slate { background-color: var(--slate); }
+  .text-navy { color: var(--navy); }
+  .text-teal { color: var(--teal); }
+  .text-gold { color: var(--gold); }
+  .text-slate { color: var(--slate); }
+  .text-gray-medium { color: var(--gray-medium); }
+  .border-navy { border-color: var(--navy); }
+  .border-teal { border-color: var(--teal); }
+  .border-gold { border-color: var(--gold); }
 }

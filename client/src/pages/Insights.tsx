@@ -1,212 +1,101 @@
-import { Button } from "@/components/ui/button";
 import Layout from "@/components/layout/Layout";
-import { ArrowRight, Search, Filter } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+
+const articles = [
+  { cat: "Gestão de Mudanças", title: "5 erros fatais na gestão de mudanças", desc: "Os equívocos mais comuns que fazem 70% das transformações falharem." },
+  { cat: "Metodologia", title: "Managed Change™ vs. ADKAR", desc: "Comparativo detalhado entre as duas principais metodologias." },
+  { cat: "Transformação Digital", title: "Change management na transformação digital", desc: "Por que investir em tecnologia sem gestão de mudanças é como comprar um Ferrari sem aprender a dirigir." },
+  { cat: "Liderança", title: "Liderança na era 5.0", desc: "Como a convergência entre tecnologia e humanização redefine o papel do líder." },
+  { cat: "Agilidade", title: "Agile Change: agilidade + mudança", desc: "Framework para integrar práticas ágeis com change management." },
+  { cat: "IA & Direito", title: "IA nos tribunais brasileiros", desc: "Impactos e frameworks legais da inteligência artificial no judiciário." },
+];
+
+const resources = [
+  { emoji: "📘", title: "5 Erros Fatais na Gestão de Mudanças", desc: "eBook com os equívocos mais comuns e como evitá-los.", border: "border-t-gold" },
+  { emoji: "✅", title: "Checklist de Prontidão", desc: "20 perguntas essenciais para avaliar se sua organização está pronta.", border: "border-t-teal" },
+  { emoji: "📋", title: "Template Plano de Comunicação", desc: "Modelo pronto para estruturar comunicação em qualquer mudança.", border: "border-t-navy" },
+];
 
 export default function Insights() {
-  const articles = [
-    {
-      id: 1,
-      category: "Digital",
-      date: "15 JAN 2026",
-      readTime: "5 MIN READ",
-      title: "A Ilusão da IA Generativa na Indústria: Por que a base de dados importa mais que o modelo",
-      excerpt: "Enquanto todos olham para o ChatGPT, as verdadeiras revoluções industriais estão acontecendo na estruturação de dados legados e na governança de informações críticas.",
-      image: "/images/blog-1.jpg"
-    },
-    {
-      id: 2,
-      category: "Strategy",
-      date: "10 JAN 2026",
-      readTime: "7 MIN READ",
-      title: "O Fim dos Projetos de \"Go-Live\": Focando em Adoção Sustentável",
-      excerpt: "Por que 70% das transformações digitais falham não na tecnologia, mas na incapacidade de mudar comportamentos e processos operacionais no longo prazo.",
-      image: "/images/blog-2.jpg"
-    },
-    {
-      id: 3,
-      category: "Execution",
-      date: "05 JAN 2026",
-      readTime: "4 MIN READ",
-      title: "PMO 4.0: De Controlador de Prazos a Viabilizador de Valor",
-      excerpt: "Como os escritórios de projetos modernos estão abandonando a burocracia excessiva para focar em métricas de valor real e desbloqueio de gargalos estratégicos.",
-      image: "/images/blog-3.jpg"
-    },
-    {
-      id: 4,
-      category: "Industry 4.0",
-      date: "28 DEZ 2025",
-      readTime: "6 MIN READ",
-      title: "Gêmeos Digitais: Da Teoria à Prática em Chão de Fábrica",
-      excerpt: "Estudos de caso reais sobre como a implementação de Digital Twins reduziu o tempo de parada não programada em 30% em indústrias de manufatura pesada.",
-      image: "/images/blog-4.jpg"
-    },
-    {
-      id: 5,
-      category: "Leadership",
-      date: "15 DEZ 2025",
-      readTime: "5 MIN READ",
-      title: "Liderança em Tempos de Incerteza: Navegando Crises Globais",
-      excerpt: "Como líderes resilientes estão adaptando suas estratégias operacionais para lidar com rupturas na cadeia de suprimentos e instabilidade geopolítica.",
-      image: "/images/blog-5.jpg"
-    },
-    {
-      id: 6,
-      category: "Sustainability",
-      date: "02 DEZ 2025",
-      readTime: "8 MIN READ",
-      title: "ESG como Driver de Eficiência Operacional, não apenas Compliance",
-      excerpt: "Transformando a agenda de sustentabilidade em vantagem competitiva através da otimização de recursos e redução de desperdícios na operação.",
-      image: "/images/blog-6.jpg"
-    }
-  ];
-
-  const categories = ["Todos", "Strategy", "Digital", "Execution", "Industry 4.0", "Leadership", "Sustainability"];
-
   return (
     <Layout>
-      {/* Header */}
-      <div className="bg-secondary/30 py-20 border-b border-border relative overflow-hidden">
-        <div className="absolute inset-0 grid-lines opacity-20 pointer-events-none" />
+      <div className="pt-32 pb-16 relative" style={{ background: "linear-gradient(135deg, #0B3D5C, #072A40)" }}>
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gold via-teal to-gold" />
         <div className="container relative z-10">
-          <span className="text-primary font-mono text-sm font-bold uppercase tracking-widest mb-2 block">Thought Leadership</span>
-          <h1 className="text-5xl font-display font-bold uppercase tracking-tight text-foreground mb-6">Insights</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
-            Perspectivas profundas sobre transformação, tecnologia e execução estratégica para líderes que moldam o futuro.
-          </p>
+          <p className="text-xs text-white/40 mb-4"><Link href="/" className="hover:text-gold cursor-pointer">Home</Link> <span className="mx-2">›</span> Insights</p>
+          <h1 className="text-4xl md:text-5xl font-display text-white mb-3">Insights</h1>
+          <p className="text-lg text-white/60 max-w-xl">Artigos, cases, recursos gratuitos e pensamento de liderança sobre transformação organizacional.</p>
         </div>
       </div>
 
-      {/* Filter & Search Bar */}
-      <div className="border-b border-border bg-background sticky top-16 z-30 shadow-sm">
-        <div className="container py-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 no-scrollbar">
-              <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
-              {categories.map((cat, idx) => (
-                <button 
-                  key={idx}
-                  className={`text-sm font-medium px-3 py-1.5 whitespace-nowrap transition-colors ${
-                    idx === 0 
-                      ? "bg-primary text-white font-bold" 
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-            <div className="relative w-full md:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input placeholder="Buscar artigos..." className="pl-9 rounded-none bg-secondary/10 border-border focus:border-primary h-10" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Featured Article */}
-      <section className="py-16 border-b border-border">
+      {/* Blog */}
+      <section className="py-20">
         <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center group cursor-pointer">
-            <div className="lg:col-span-8 overflow-hidden relative aspect-video lg:aspect-auto lg:h-[500px]">
-              <div className="absolute top-6 left-6 bg-primary text-white text-sm font-bold px-3 py-1.5 uppercase tracking-wider z-10">
-                Destaque
+          <p className="section-tag">Blog</p>
+          <h2 className="section-title">Artigos recentes</h2>
+          <p className="section-subtitle">Conteúdo original sobre gestão de mudanças e liderança — em português.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {articles.map((a) => (
+              <div key={a.title} className="bg-white rounded-lg p-7 border border-border hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer">
+                <span className="text-teal text-[10px] font-semibold tracking-widest uppercase">{a.cat}</span>
+                <h3 className="font-display text-lg text-navy mt-3 mb-2">{a.title}</h3>
+                <p className="text-sm text-gray-medium mb-4">{a.desc}</p>
+                <span className="text-sm font-semibold text-teal flex items-center gap-1">Ler artigo <ArrowRight className="w-3.5 h-3.5" /></span>
               </div>
-              <img src="/images/blog-featured.jpg" alt="Featured" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" 
-                onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.style.backgroundColor = '#e5e5e5'; }}
-              />
-            </div>
-            <div className="lg:col-span-4 space-y-6">
-              <div className="flex items-center gap-3 text-xs font-mono text-muted-foreground">
-                <span className="text-primary font-bold uppercase">Strategy</span>
-                <span>•</span>
-                <span>20 JAN 2026</span>
-                <span>•</span>
-                <span>10 MIN READ</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-display font-bold leading-tight group-hover:text-primary transition-colors">
-                O Futuro da Consultoria: Por que o modelo "Body Shop" está morrendo
-              </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Em um mundo pós-IA, alocar horas de consultores juniores não gera mais valor. O futuro pertence às firmas que vendem outcomes, propriedade intelectual e execução tecnológica real.
-              </p>
-              <div className="pt-4">
-                <Button variant="outline" className="rounded-none border-foreground/20 hover:bg-foreground/5 uppercase font-bold tracking-wide group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all">
-                  Ler Artigo Completo
-                </Button>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Articles Grid */}
-      <section className="py-24 bg-secondary/5">
+      {/* Resources */}
+      <section className="py-20 bg-cream">
         <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-            {articles.map((article) => (
-              <article key={article.id} className="group cursor-pointer flex flex-col h-full">
-                <div className="aspect-video bg-background border border-border mb-6 overflow-hidden relative">
-                  <div className="absolute top-4 left-4 bg-secondary text-foreground text-xs font-bold px-2 py-1 uppercase tracking-wider z-10">
-                    {article.category}
-                  </div>
-                  <img src={article.image} alt={article.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" 
-                    onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.style.backgroundColor = '#e5e5e5'; }}
-                  />
-                </div>
-                <div className="space-y-3 flex-grow">
-                  <div className="text-xs font-mono text-muted-foreground">
-                    {article.date} • {article.readTime}
-                  </div>
-                  <h3 className="text-xl font-display font-bold leading-tight group-hover:text-primary transition-colors">
-                    {article.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground line-clamp-3">
-                    {article.excerpt}
-                  </p>
-                </div>
-                <div className="pt-6 mt-auto">
-                  <div className="flex items-center gap-2 text-sm font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-2 group-hover:translate-x-0">
-                    Ler artigo <ArrowRight className="w-3 h-3" />
-                  </div>
-                </div>
-              </article>
+          <p className="section-tag">Downloads</p>
+          <h2 className="section-title">Recursos gratuitos</h2>
+          <p className="section-subtitle">eBooks, checklists e templates para ajudar na mudança organizacional.</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {resources.map((r) => (
+              <div key={r.title} className={`bg-white rounded-lg p-7 border border-border border-t-[3px] ${r.border} hover:shadow-md transition-all cursor-pointer`}>
+                <div className="text-3xl mb-3">{r.emoji}</div>
+                <h3 className="font-display text-lg text-navy mb-2">{r.title}</h3>
+                <p className="text-sm text-gray-medium mb-4">{r.desc}</p>
+                <span className="text-sm font-semibold text-teal flex items-center gap-1">Download gratuito <ArrowRight className="w-3.5 h-3.5" /></span>
+              </div>
             ))}
-          </div>
-          
-          <div className="mt-16 text-center">
-            <Button variant="outline" size="lg" className="rounded-none border-foreground/20 hover:bg-foreground/5 uppercase font-bold tracking-wide px-10">
-              Carregar Mais Artigos
-            </Button>
           </div>
         </div>
       </section>
 
       {/* Newsletter */}
-      <section className="py-24 bg-foreground text-background relative overflow-hidden">
-        <div className="absolute inset-0 grid-lines opacity-10 pointer-events-none" />
-        <div className="container relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-3xl font-display font-bold uppercase tracking-tight mb-4">
-                Receba nossos insights
-              </h2>
-              <p className="text-background/70 text-lg">
-                Análises estratégicas e tendências de mercado diretamente na sua caixa de entrada. Sem spam, apenas conteúdo de alto valor.
-              </p>
+      <section className="py-20">
+        <div className="container">
+          <div className="rounded-xl p-12 md:p-16 text-center text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0B3D5C, #1A6E8E)" }}>
+            <div className="absolute top-[-40px] right-[-40px] w-48 h-48 rounded-full bg-gold/8" />
+            <div className="relative z-10">
+              <p className="text-gold text-xs font-bold tracking-widest uppercase mb-3">Newsletter</p>
+              <h2 className="font-display text-3xl mb-3">Change Pulse</h2>
+              <p className="text-white/65 mb-8 max-w-md mx-auto">Artigos, tendências e ferramentas sobre gestão de mudanças — quinzenalmente.</p>
+              <div className="flex gap-3 max-w-md mx-auto">
+                <input type="email" placeholder="seu@email.com" className="flex-1 px-4 py-3 rounded-md border-none bg-white text-foreground text-sm" />
+                <Button className="bg-gold hover:bg-gold-light text-navy-dark font-semibold rounded-md">Assinar</Button>
+              </div>
             </div>
-            <div className="bg-background/5 p-8 border border-background/10 backdrop-blur-sm">
-              <form className="flex flex-col sm:flex-row gap-4">
-                <Input placeholder="Seu e-mail corporativo" className="bg-background text-foreground rounded-none h-14 border-transparent focus:border-primary" />
-                <Button className="bg-primary hover:bg-primary/90 text-white rounded-none h-14 px-8 font-bold uppercase tracking-wide whitespace-nowrap">
-                  Inscrever-se
-                </Button>
-              </form>
-              <p className="text-xs text-background/40 mt-4">
-                Ao se inscrever, você concorda com nossa Política de Privacidade. Você pode cancelar a inscrição a qualquer momento.
-              </p>
-            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Cases placeholder */}
+      <section className="py-20 bg-muted">
+        <div className="container">
+          <p className="section-tag">Cases de sucesso</p>
+          <h2 className="section-title">Resultados reais</h2>
+          <div className="bg-white rounded-xl p-12 text-center border-2 border-dashed border-border mt-8">
+            <div className="text-4xl mb-4">📊</div>
+            <h3 className="font-display text-xl text-navy mb-2">Cases em desenvolvimento</h3>
+            <p className="text-sm text-gray-medium max-w-md mx-auto mb-5">Estamos documentando nossos cases com métricas e resultados detalhados.</p>
+            <Link href="/contato"><Button variant="outline" className="border-teal text-teal hover:bg-teal/5 rounded-md text-sm">Solicitar referências <ArrowRight className="w-4 h-4 ml-1" /></Button></Link>
           </div>
         </div>
       </section>
