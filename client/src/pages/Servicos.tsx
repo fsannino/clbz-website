@@ -1,7 +1,58 @@
 import Layout from "@/components/layout/Layout";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Layers, BarChart3, ShieldCheck, Blocks, Cpu, Bot, Wrench } from "lucide-react";
+import { ArrowRight, TrendingUp, Layers, Users, Cpu, BarChart3, ShieldCheck, Wrench, Globe, CheckCircle2 } from "lucide-react";
+
+const solutions = [
+  {
+    id: "eficiencia", icon: TrendingUp, title: "Eficiência Operacional", color: "border-gold",
+    desc: "Otimização de recursos, redução de custos e melhoria de produtividade com metodologias comprovadas e personalizadas.",
+    indicated: "Empresas com gastos crescentes, margens decrescentes ou processos ineficientes.",
+    items: ["Orçamento Base Zero (OBZ)", "Orçamento Matricial", "Otimização de Processos", "Redução de Custos Operacionais", "Melhoria de Produtividade", "Lean Management"],
+  },
+  {
+    id: "estrategia", icon: Layers, title: "Estratégia & Planejamento", color: "border-teal",
+    desc: "Formulação estratégica, modelos operacionais e planejamento financeiro para decisões de alto impacto.",
+    indicated: "Empresas em crescimento, reestruturação ou processos de fusão e aquisição.",
+    items: ["Formulação Estratégica", "Planejamento Financeiro", "Modelos Operacionais", "Fusões & Aquisições (M&A)", "Valuation & Due Diligence", "Design Organizacional"],
+  },
+  {
+    id: "mudancas", icon: Users, title: "Gestão de Mudanças & Transformação", color: "border-navy",
+    desc: "Gestão de mudança organizacional com foco em pessoas, adoção real e resultados sustentáveis. Integramos as melhores práticas internacionais, customizadas ao contexto de cada cliente.",
+    indicated: "Empresas em processo de transformação, implementação de novas tecnologias ou reestruturação.",
+    items: ["Diagnóstico & Assessments", "Planejamento de Mudança", "Gestão de Resistência", "Comunicação & Engajamento", "Treinamento & Capacitação", "Change as a Service"],
+  },
+  {
+    id: "dados", icon: Cpu, title: "Dados, IA & Tecnologia", color: "border-teal",
+    desc: "Business Intelligence, automação, analytics e inteligência artificial aplicada a decisões de negócio.",
+    indicated: "Empresas que precisam transformar dados em decisões estratégicas.",
+    items: ["Business Intelligence & Dashboards", "Automação de Processos (RPA/n8n)", "Analytics & Data Science", "IA aplicada a gestão", "ETL & Integração de Dados", "Cloud & Infraestrutura"],
+  },
+  {
+    id: "pmo", icon: BarChart3, title: "PMO & Execução de Programas", color: "border-gold",
+    desc: "Gestão de programas complexos, governança de projetos e foco na realização de benefícios tangíveis.",
+    indicated: "Organizações com múltiplos projetos simultâneos ou programas de transformação.",
+    items: ["Setup & Sustentação de PMO", "Gestão de Portfólio", "Governança de Projetos", "Metodologias Ágeis & Híbridas", "Métricas de Valor & KPIs", "CAPEX & Gestão de Investimentos"],
+  },
+  {
+    id: "governanca", icon: ShieldCheck, title: "Governança & Compliance", color: "border-navy",
+    desc: "Estruturação de processos decisórios, compliance regulatório e frameworks de governança corporativa.",
+    indicated: "Empresas em crescimento que precisam de estruturas robustas de decisão e controle.",
+    items: ["Estruturação de Governança", "Compliance & Regulatório", "Processos Decisórios", "Comitês & Conselhos", "Gestão de Riscos", "Reporting Executivo"],
+  },
+  {
+    id: "reestruturacao", icon: Wrench, title: "Reestruturação & Turnaround", color: "border-gold",
+    desc: "Gestão de crises, renegociação de dívidas, otimização de caixa e recuperação operacional.",
+    indicated: "Empresas altamente endividadas, com crise de caixa ou margens negativas.",
+    items: ["Diagnóstico de Crise", "Gestão de Caixa & Working Capital", "Renegociação de Dívidas", "Reestruturação Organizacional", "Turnaround Operacional", "Plano de Recuperação"],
+  },
+  {
+    id: "lsp", icon: Globe, title: "LEGO® SERIOUS PLAY®", color: "border-teal",
+    desc: "Metodologia de facilitação experiencial para estratégia, inovação, team building e resolução de problemas complexos.",
+    indicated: "Equipes que precisam de alinhamento estratégico, inovação ou resolução de conflitos.",
+    items: ["Workshops de Estratégia", "Team Building", "Resolução de Problemas", "Design de Modelos de Negócio", "Cenários Futuros", "Alinhamento de Liderança"],
+  },
+];
 
 export default function Servicos() {
   return (
@@ -10,143 +61,54 @@ export default function Servicos() {
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gold via-teal to-gold" />
         <div className="container relative z-10">
           <p className="text-xs text-white/40 mb-4"><Link href="/" className="hover:text-gold cursor-pointer">Home</Link> <span className="mx-2">›</span> Serviços</p>
-          <h1 className="text-4xl md:text-5xl font-display text-white mb-3">Nossos Serviços</h1>
-          <p className="text-lg text-white/60 max-w-xl">Soluções integradas de consultoria, desde o diagnóstico até a sustentação da mudança.</p>
+          <h1 className="text-4xl md:text-5xl font-display text-white mb-3">Nossas Soluções</h1>
+          <p className="text-lg text-white/60 max-w-xl">Soluções projetadas para resultados duradouros e sustentáveis, impulsionando sua empresa para novos patamares.</p>
         </div>
       </div>
 
-      {/* Change Management */}
-      <section className="py-20">
-        <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-            <div>
-              <p className="section-tag">Serviço principal</p>
-              <h2 className="section-title">Gestão de Mudanças</h2>
-              <p className="text-gray-medium mb-4">Utilizando a metodologia <strong className="text-navy">Managed Change™</strong> da LaMarsh Global, ajudamos sua organização a navegar por transformações complexas com foco nas pessoas.</p>
-              <p className="text-gray-medium mb-6">Nossa abordagem identifica, analisa e supera a resistência à mudança de forma estruturada, mensurável e sustentável.</p>
-              <Link href="/metodologia"><Button className="bg-teal hover:bg-teal-light text-white rounded-md text-sm">Conheça a metodologia <ArrowRight className="w-4 h-4 ml-1" /></Button></Link>
-            </div>
-            <div className="space-y-3">
-              {[
-                { title: "Diagnóstico & Assessments", desc: "Avaliação de prontidão, mapeamento de stakeholders e análise de impacto.", color: "border-navy" },
-                { title: "Planejamento & Estratégia", desc: "Planos de comunicação, engajamento, treinamento e gestão de resistência.", color: "border-teal" },
-                { title: "Implementação & Acompanhamento", desc: "Execução com monitoramento contínuo de adoção e ajustes em tempo real.", color: "border-gold" },
-                { title: "Change as a Service", desc: "Suporte contínuo sob demanda, como extensão do seu time interno.", color: "border-slate" },
-              ].map((s) => (
-                <div key={s.title} className={`bg-muted rounded-lg p-6 border-l-[3px] ${s.color}`}>
-                  <strong className="text-navy text-sm">{s.title}</strong>
-                  <p className="text-xs text-gray-medium mt-1">{s.desc}</p>
+      {/* Solutions */}
+      {solutions.map((s, i) => (
+        <section key={s.id} id={s.id} className={`py-20 ${i % 2 === 1 ? "bg-cream" : ""}`}>
+          <div className="container">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+              <div className="lg:col-span-7">
+                <div className="flex items-center gap-4 mb-5">
+                  <div className="w-12 h-12 rounded-xl bg-navy/8 flex items-center justify-center"><s.icon className="w-6 h-6 text-navy" /></div>
+                  <h2 className="text-2xl md:text-3xl font-display text-navy">{s.title}</h2>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* PMO */}
-      <section className="py-20 bg-cream">
-        <div className="container">
-          <p className="section-tag">Gestão de projetos</p>
-          <h2 className="section-title">Gestão de Projetos & PMO</h2>
-          <p className="text-gray-medium max-w-2xl mb-8">Estruturamos escritórios de projetos e implementamos governança para garantir entregas no prazo, no orçamento e com qualidade.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {[
-              { title: "Governança", desc: "Projetos e programas com processos claros de decisão." },
-              { title: "PMO Setup", desc: "Implantação e sustentação de escritórios de projetos." },
-              { title: "Portfólio", desc: "Gestão e priorização de iniciativas estratégicas." },
-              { title: "Ágil & Híbrido", desc: "Metodologias adaptadas à maturidade da organização." },
-            ].map((c) => (
-              <div key={c.title} className="bg-white rounded-lg p-6 border border-border hover:shadow-md transition-all">
-                <h3 className="font-display text-lg text-navy mb-2">{c.title}</h3>
-                <p className="text-sm text-gray-medium">{c.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Governance */}
-      <section className="py-20">
-        <div className="container">
-          <p className="section-tag">Governança</p>
-          <h2 className="section-title">Governança Corporativa</h2>
-          <p className="section-subtitle">Processos decisórios, compliance e frameworks de governança para organizações em transformação.</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { icon: ShieldCheck, title: "Estruturação", desc: "Design de governança, comitês, papéis e responsabilidades alinhados à estratégia." },
-              { icon: Layers, title: "Compliance", desc: "Frameworks de compliance, fluxos de aprovação e processos decisórios transparentes." },
-              { icon: BarChart3, title: "Dashboards", desc: "Painéis de controle e reporting executivo para visibilidade em todos os níveis." },
-            ].map((c) => (
-              <div key={c.title} className="bg-white rounded-lg p-7 border border-border hover:shadow-md hover:-translate-y-1 transition-all">
-                <div className="w-11 h-11 rounded-lg bg-navy/8 flex items-center justify-center mb-4">
-                  <c.icon className="w-5 h-5 text-navy" />
+                <p className="text-gray-medium mb-4">{s.desc}</p>
+                <div className="bg-gold/5 border border-gold/20 rounded-lg p-4 mb-6">
+                  <p className="text-sm"><strong className="text-navy">Indicado para: </strong><span className="text-gray-medium">{s.indicated}</span></p>
                 </div>
-                <h3 className="font-display text-lg text-navy mb-2">{c.title}</h3>
-                <p className="text-sm text-gray-medium">{c.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* LEGO SERIOUS PLAY */}
-      <section className="py-20 bg-muted">
-        <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-            <div className="rounded-xl p-12 text-white" style={{ background: "linear-gradient(135deg, #E05040, #F7A823)" }}>
-              <p className="text-sm font-bold tracking-widest opacity-80 mb-4">METODOLOGIA CERTIFICADA</p>
-              <div className="font-display text-4xl leading-tight">LEGO®<br />SERIOUS<br />PLAY®</div>
-              <p className="text-sm opacity-80 mt-4">Facilitação certificada</p>
-            </div>
-            <div>
-              <p className="section-tag">Workshop experiencial</p>
-              <h2 className="section-title">LEGO® SERIOUS PLAY®</h2>
-              <p className="text-gray-medium mb-5">Metodologia de facilitação que utiliza peças LEGO como ferramenta de pensamento, comunicação e resolução de problemas.</p>
-              <ul className="space-y-2 mb-6">
-                {["Workshops facilitados para equipes e liderança", "Team building e alinhamento estratégico", "Resolução de problemas complexos", "Design de modelos de negócio e cenários futuros"].map((item) => (
-                  <li key={item} className="flex gap-2 items-center text-sm text-gray-medium"><span className="text-gold">✦</span> {item}</li>
-                ))}
-              </ul>
-              <Link href="/contato"><Button className="bg-navy hover:bg-teal text-white rounded-md text-sm">Solicitar um workshop <ArrowRight className="w-4 h-4 ml-1" /></Button></Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Technology */}
-      <section className="py-20">
-        <div className="container">
-          <p className="section-tag">Tecnologia</p>
-          <h2 className="section-title">Tecnologia aplicada à transformação</h2>
-          <p className="section-subtitle">Ferramentas digitais e automação para potencializar e medir o impacto da mudança.</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { icon: Wrench, title: "Automação", desc: "Workflows com n8n, Node-RED e ferramentas de integração para eliminar gargalos.", bg: "bg-teal/8", color: "text-teal" },
-              { icon: BarChart3, title: "Analytics", desc: "Painéis em tempo real para monitorar adoção e resultados das iniciativas.", bg: "bg-navy/8", color: "text-navy" },
-              { icon: Bot, title: "IA aplicada", desc: "Análise de sentimento, predição de resistência e personalização de comunicações.", bg: "bg-gold/10", color: "text-gold" },
-            ].map((c) => (
-              <div key={c.title} className="bg-white rounded-lg p-7 border border-border hover:shadow-md hover:-translate-y-1 transition-all">
-                <div className={`w-11 h-11 rounded-lg ${c.bg} flex items-center justify-center mb-4`}>
-                  <c.icon className={`w-5 h-5 ${c.color}`} />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {s.items.map((item) => (
+                    <div key={item} className="flex gap-2 items-center text-sm text-gray-medium">
+                      <CheckCircle2 className="w-4 h-4 text-teal shrink-0" /> {item}
+                    </div>
+                  ))}
                 </div>
-                <h3 className="font-display text-lg text-navy mb-2">{c.title}</h3>
-                <p className="text-sm text-gray-medium">{c.desc}</p>
               </div>
-            ))}
+              <div className="lg:col-span-5">
+                <div className={`bg-white rounded-xl p-8 border border-border ${s.color} border-t-4 shadow-sm`}>
+                  <div className="text-center">
+                    <s.icon className="w-16 h-16 text-navy/10 mx-auto mb-4" />
+                    <h3 className="font-display text-xl text-navy mb-3">{s.title}</h3>
+                    <p className="text-sm text-gray-medium mb-6">Quer saber como essa solução pode ajudar sua empresa?</p>
+                    <Link href="/contato"><Button className="bg-navy hover:bg-teal text-white rounded-md text-sm w-full justify-center">Solicitar proposta <ArrowRight className="w-4 h-4 ml-1" /></Button></Link>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ))}
 
       {/* CTA */}
-      <section className="py-20 bg-cream">
-        <div className="container">
-          <div className="rounded-xl p-12 text-center text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0B3D5C, #1A6E8E)" }}>
-            <h2 className="font-display text-3xl mb-3 relative z-10">Cada transformação é única. A sua também.</h2>
-            <p className="text-white/65 mb-6 relative z-10">Conte-nos sobre o seu desafio e nós desenhamos a solução.</p>
-            <Link href="/contato"><Button className="bg-gold hover:bg-gold-light text-navy-dark font-semibold px-8 py-5 rounded-md relative z-10">Solicitar uma proposta <ArrowRight className="w-4 h-4 ml-1" /></Button></Link>
-          </div>
-        </div>
-      </section>
+      <section className="py-20 bg-navy"><div className="container"><div className="rounded-xl p-12 text-center text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, #1A6E8E, #0B3D5C)" }}>
+        <h2 className="font-display text-3xl mb-3 relative z-10">Cada transformação é única. A sua também.</h2>
+        <p className="text-white/65 mb-6 relative z-10">Conte-nos sobre o seu desafio e nós desenhamos a solução sob medida.</p>
+        <Link href="/contato"><Button className="bg-gold hover:bg-gold-light text-navy-dark font-semibold px-8 py-5 rounded-md relative z-10">Solicitar uma proposta <ArrowRight className="w-4 h-4 ml-1" /></Button></Link>
+      </div></div></section>
     </Layout>
   );
 }

@@ -153,7 +153,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </span>
               </div>
               <p className="text-sm leading-relaxed">
-                Consultoria em transformação organizacional, gestão de mudanças e educação corporativa. Licença exclusiva LaMarsh Global para Brasil e LATAM.
+                Consultoria em transformação organizacional, gestão de mudanças e educação corporativa. Metodologias customizadas para cada cliente. Parceira ScrumStudy para certificações ágeis.
               </p>
             </div>
 
@@ -195,7 +195,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* Bottom */}
           <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs">
             <span>© 2026 collab:Z — Collaborazione Assessoria. Todos os direitos reservados.</span>
-            <span className="text-white/40">Parceiros: LaMarsh Global · ScrumStudy</span>
+            <span className="text-white/40">Parceiro: ScrumStudy (ATP)</span>
           </div>
         </div>
       </footer>

@@ -60,7 +60,7 @@ export default function Contato() {
                     <select required className="w-full px-4 py-3 border border-border rounded-md text-sm bg-white focus:border-teal focus:ring-2 focus:ring-teal/10 outline-none transition-all">
                       <option value="">Selecione</option>
                       <option>Consultoria</option>
-                      <option>Certificação (LaMarsh / ScrumStudy)</option>
+                      <option>Certificação (ScrumStudy / collab:Z)</option>
                       <option>Treinamento in-company</option>
                       <option>Proposta de parceria</option>
                       <option>Outro</option>

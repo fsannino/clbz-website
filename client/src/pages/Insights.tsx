@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 
 const articles = [
   { cat: "Gestão de Mudanças", title: "5 erros fatais na gestão de mudanças", desc: "Os equívocos mais comuns que fazem 70% das transformações falharem." },
-  { cat: "Metodologia", title: "Managed Change™ vs. ADKAR", desc: "Comparativo detalhado entre as duas principais metodologias." },
+  { cat: "Metodologia", title: "Qual a melhor abordagem para gestão de mudanças?", desc: "Como escolher e combinar metodologias de change management para cada contexto." },
   { cat: "Transformação Digital", title: "Change management na transformação digital", desc: "Por que investir em tecnologia sem gestão de mudanças é como comprar um Ferrari sem aprender a dirigir." },
   { cat: "Liderança", title: "Liderança na era 5.0", desc: "Como a convergência entre tecnologia e humanização redefine o papel do líder." },
   { cat: "Agilidade", title: "Agile Change: agilidade + mudança", desc: "Framework para integrar práticas ágeis com change management." },

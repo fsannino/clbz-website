@@ -32,7 +32,7 @@ export default function Sobre() {
                 {[
                   { t: "Fundação", d: "Nasce a Collaborazione Assessoria com foco em gestão de projetos e consultoria organizacional." },
                   { t: "Expansão", d: "Incorporação de LEGO® SERIOUS PLAY®, governança corporativa e transformação digital." },
-                  { t: "Parceria LaMarsh", d: "Licença exclusiva para Brasil e LATAM da metodologia Managed Change™." },
+                  { t: "Expansão Internacional", d: "Alinhamento com referências internacionais de gestão de mudanças e certificações ágeis." },
                   { t: "Rebranding collab:Z", d: "Nova marca, nova identidade: Consultoria + Educação + Tecnologia." },
                   { t: "ScrumStudy ATP", d: "Authorized Training Partner para certificações ágeis no Brasil." },
                 ].map((item) => (
@@ -87,7 +87,7 @@ export default function Sobre() {
               <p className="text-teal font-semibold text-sm mb-4">Fundador & CEO</p>
               <p className="text-sm text-gray-medium mb-3">Consultor sênior com expertise em gestão de mudanças, governança corporativa e transformação organizacional. Experiência em grandes empresas como Teleperformance. Facilitador certificado LEGO® SERIOUS PLAY®. Acadêmico de Direito com interesse na interseção entre tecnologia, IA e marcos regulatórios.</p>
               <div className="flex gap-2 flex-wrap">
-                <span className="badge-lamarsh inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">LaMarsh Certified</span>
+                <span className="badge-lamarsh inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">Change Management</span>
                 <span className="badge-collabz inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">LEGO® SERIOUS PLAY®</span>
                 <span className="badge-scrumstudy inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">ScrumStudy ATP</span>
               </div>
