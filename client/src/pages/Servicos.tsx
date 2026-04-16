@@ -47,10 +47,10 @@ const solutions = [
     items: ["Diagnóstico de Crise", "Gestão de Caixa & Working Capital", "Renegociação de Dívidas", "Reestruturação Organizacional", "Turnaround Operacional", "Plano de Recuperação"],
   },
   {
-    id: "lsp", icon: Globe, title: "LEGO® SERIOUS PLAY®", color: "border-teal",
-    desc: "Metodologia de facilitação experiencial para estratégia, inovação, team building e resolução de problemas complexos.",
-    indicated: "Equipes que precisam de alinhamento estratégico, inovação ou resolução de conflitos.",
-    items: ["Workshops de Estratégia", "Team Building", "Resolução de Problemas", "Design de Modelos de Negócio", "Cenários Futuros", "Alinhamento de Liderança"],
+    id: "gamificacao", icon: Globe, title: "Gamificação & Engajamento", color: "border-teal",
+    desc: "Utilizando sistemas online, presenciais e metodologias como o LEGO® SERIOUS PLAY®, criamos experiências de engajamento que transformam a forma como equipes colaboram, aprendem e resolvem problemas.",
+    indicated: "Equipes que precisam de engajamento, alinhamento, capacitação interativa ou resolução de problemas.",
+    items: ["Gamificação Corporativa", "LEGO® SERIOUS PLAY®", "Plataformas de Engajamento Online", "Team Building Experiencial", "Treinamentos Interativos", "Dinâmicas de Alinhamento"],
   },
 ];
 

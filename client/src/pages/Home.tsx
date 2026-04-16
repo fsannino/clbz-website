@@ -118,7 +118,7 @@ export default function Home() {
               { icon: BarChart3, title: "PMO & Execução", desc: "Gestão de programas complexos, governança e realização de benefícios." },
               { icon: ShieldCheck, title: "Governança & Compliance", desc: "Processos decisórios, compliance e frameworks de governança." },
               { icon: Wrench, title: "Reestruturação & Turnaround", desc: "Gestão de crises, renegociação, otimização de caixa e recuperação." },
-              { icon: Globe, title: "LEGO® SERIOUS PLAY®", desc: "Workshops para estratégia, team building e resolução de problemas." },
+              { icon: Globe, title: "Gamificação & Engajamento", desc: "Sistemas online, presenciais e metodologias como LEGO® SERIOUS PLAY® para engajar equipes." },
             ].map((s) => (
               <Link href="/servicos" key={s.title}><div className="group bg-white rounded-lg p-6 border border-border hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer h-full">
                 <div className="w-10 h-10 rounded-lg bg-navy/8 flex items-center justify-center mb-4 group-hover:bg-teal/8 transition-colors"><s.icon className="w-5 h-5 text-navy group-hover:text-teal transition-colors" /></div>

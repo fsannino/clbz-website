@@ -176,7 +176,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <li><Link href="/servicos" className="text-sm hover:text-gold transition-colors cursor-pointer">Gestão de Mudanças</Link></li>
                 <li><Link href="/servicos" className="text-sm hover:text-gold transition-colors cursor-pointer">Gestão de Projetos</Link></li>
                 <li><Link href="/servicos" className="text-sm hover:text-gold transition-colors cursor-pointer">Governança</Link></li>
-                <li><Link href="/servicos" className="text-sm hover:text-gold transition-colors cursor-pointer">LEGO® SERIOUS PLAY®</Link></li>
+                <li><Link href="/servicos" className="text-sm hover:text-gold transition-colors cursor-pointer">Gamificação</Link></li>
               </ul>
             </div>
 
