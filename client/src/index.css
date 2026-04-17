@@ -328,6 +328,225 @@
     border-left: 3px solid var(--navy);
     color: var(--slate);
   }
+
+  /* Service body typography — reuses article-body tokens */
+  .service-body {
+    color: var(--slate);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+  .service-body > * + * {
+    margin-top: 1.25rem;
+  }
+  .service-body h3 {
+    font-family: var(--font-display);
+    color: var(--navy);
+    font-size: 1.375rem;
+    line-height: 1.3;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .service-body .lead {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--navy);
+    font-weight: 500;
+  }
+  .service-body strong {
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .service-body em { font-style: italic; }
+  .service-body a {
+    color: var(--teal);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .service-body a:hover { color: var(--navy); }
+  .service-body ul,
+  .service-body ol { padding-left: 1.5rem; }
+  .service-body ul { list-style: disc; }
+  .service-body ol { list-style: decimal; }
+  .service-body li + li { margin-top: 0.5rem; }
+  .service-body li::marker { color: var(--teal); }
+  .service-body .callout {
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.75rem 0;
+    font-size: 1rem;
+  }
+  .service-body .callout strong { color: inherit; }
+  .service-body .callout-teal {
+    background: rgba(26, 110, 142, 0.06);
+    border-left: 3px solid var(--teal);
+  }
+  .service-body .callout-gold {
+    background: rgba(247, 168, 35, 0.08);
+    border-left: 3px solid var(--gold);
+  }
+  .service-body .callout-navy {
+    background: rgba(11, 61, 92, 0.05);
+    border-left: 3px solid var(--navy);
+  }
+
+  /* Print cabeçalho/rodapé institucional — invisíveis na tela,
+     exibidos apenas na impressão / save-as-PDF */
+  .print-header,
+  .print-footer {
+    display: none;
+  }
+}
+
+/* Print styles — ativados no diálogo de impressão ou salvar-como-PDF.
+   Transformam o artigo em documento A4 com branding institucional. */
+@media print {
+  @page {
+    size: A4;
+    margin: 18mm 16mm 20mm 16mm;
+  }
+
+  html, body {
+    background: #fff !important;
+    color: #111 !important;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  /* Hide everything that isn't meant for paper */
+  header, footer, nav,
+  .no-print,
+  [aria-label="Fale conosco pelo WhatsApp"],
+  .fixed {
+    display: none !important;
+  }
+
+  /* The Layout wraps content in <main className="flex-1"> */
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Collapse any hero/colored banner on the printed page */
+  [data-print-root] {
+    padding: 0 !important;
+    background: #fff !important;
+  }
+  [data-print-root] .container {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Print-only cover block */
+  .print-header {
+    display: block !important;
+    border-bottom: 2px solid #0B3D5C;
+    padding-bottom: 10mm;
+    margin-bottom: 8mm;
+  }
+  .print-header-brand {
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 14pt;
+    letter-spacing: 0.02em;
+    color: #0B3D5C;
+    margin-bottom: 6mm;
+  }
+  .print-header-cat {
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #1A6E8E;
+    margin-bottom: 3mm;
+  }
+  .print-header-title {
+    font-family: "DM Serif Display", Georgia, serif;
+    font-size: 22pt;
+    line-height: 1.15;
+    color: #0B3D5C;
+    margin: 0 0 4mm 0;
+  }
+  .print-header-excerpt {
+    font-size: 11pt;
+    color: #1E2D3D;
+    margin: 0 0 4mm 0;
+    font-style: italic;
+  }
+  .print-header-byline {
+    font-size: 9pt;
+    color: #4A5A6A;
+    margin: 0;
+  }
+
+  /* Article body in print */
+  .article-body,
+  .service-body {
+    font-size: 10.5pt !important;
+    line-height: 1.55 !important;
+    color: #111 !important;
+  }
+  .article-body .lead,
+  .service-body .lead {
+    font-size: 12pt !important;
+    color: #0B3D5C !important;
+  }
+  .article-body h2,
+  .service-body h2 {
+    font-family: "DM Serif Display", Georgia, serif;
+    color: #0B3D5C !important;
+    font-size: 16pt !important;
+    margin-top: 8mm !important;
+    margin-bottom: 3mm !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  .article-body h3,
+  .service-body h3 {
+    font-family: "DM Serif Display", Georgia, serif;
+    color: #0B3D5C !important;
+    font-size: 13pt !important;
+    margin-top: 6mm !important;
+    margin-bottom: 2mm !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  .article-body p,
+  .service-body p,
+  .article-body li,
+  .service-body li {
+    orphans: 3;
+    widows: 3;
+  }
+  .article-body .callout,
+  .service-body .callout {
+    border: 1px solid #CCC !important;
+    background: #F8F6F2 !important;
+    border-left: 3px solid #F7A823 !important;
+    padding: 3mm 5mm !important;
+    margin: 4mm 0 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .article-body a,
+  .service-body a {
+    color: #0B3D5C !important;
+    text-decoration: underline !important;
+  }
+
+  /* Page footer — institutional */
+  .print-footer {
+    display: block !important;
+    border-top: 1px solid #CCC;
+    padding-top: 4mm;
+    margin-top: 10mm;
+    font-size: 8.5pt;
+    color: #4A5A6A;
+  }
+  .print-footer p {
+    margin: 1mm 0;
+  }
 }
 
 @layer utilities {
