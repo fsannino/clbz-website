@@ -2,6 +2,7 @@ import Layout from "@/components/layout/Layout";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useSeo } from "@/lib/seo";
 
 const trainings = [
   { title: "Agile Change", desc: "Gestão de mudanças em ambientes ágeis. Para change managers e agilistas que precisam unir as duas disciplinas." },
@@ -29,6 +30,13 @@ const calendar = [
 ];
 
 export default function Educacao() {
+  useSeo({
+    title: "Educação Corporativa",
+    description:
+      "Treinamentos proprietários (Agile Change, Agile PMO, Transformação 5.0) e certificações ScrumStudy (SFC, SMC, SPOC, SDC) — presencial e virtual ao vivo.",
+    path: "/educacao",
+  });
+
   return (
     <Layout>
       <div className="pt-32 pb-16 relative" style={{ background: "linear-gradient(135deg, #0B3D5C, #072A40)" }}>

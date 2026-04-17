@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link, useRoute } from "wouter";
 import { ArrowLeft, ArrowRight, Clock, Calendar, Share2, Printer } from "lucide-react";
 import Layout from "@/components/layout/Layout";
@@ -6,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getInsightBySlug, insights } from "@/content/insights";
 import NotFound from "./NotFound";
+import { useSeo, buildArticleJsonLd, buildBreadcrumbJsonLd, SITE } from "@/lib/seo";
 
 function formatDate(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
@@ -23,14 +23,39 @@ export default function InsightArticle() {
   const slug = params?.slug ?? "";
   const entry = getInsightBySlug(slug);
 
-  useEffect(() => {
-    if (!entry) return;
-    const prev = document.title;
-    document.title = `${entry.meta.title} — Insights CollabZ`;
-    return () => {
-      document.title = prev;
-    };
-  }, [entry]);
+  useSeo(
+    entry
+      ? {
+          title: entry.meta.title,
+          description: entry.meta.excerpt,
+          path: `/insights/${entry.meta.slug}`,
+          type: "article",
+          publishedTime: entry.meta.publishedAt,
+          author: entry.meta.author.name,
+          category: entry.meta.category,
+          jsonLd: [
+            buildArticleJsonLd({
+              title: entry.meta.title,
+              description: entry.meta.excerpt,
+              slug: entry.meta.slug,
+              publishedAt: entry.meta.publishedAt,
+              authorName: entry.meta.author.name,
+              authorRole: entry.meta.author.role,
+              category: entry.meta.category,
+              readTimeMin: entry.meta.readTimeMin,
+            }),
+            buildBreadcrumbJsonLd([
+              { name: "Home", url: "/" },
+              { name: "Insights", url: "/insights" },
+              {
+                name: entry.meta.title,
+                url: `${SITE.baseUrl}/insights/${entry.meta.slug}`,
+              },
+            ]),
+          ],
+        }
+      : { title: "Artigo não encontrado", path: "/insights", noIndex: true },
+  );
 
   if (!entry) return <NotFound />;
 

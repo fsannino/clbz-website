@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { getAllInsightCards } from "@/content/insights";
 import type { InsightCategory, InsightMeta } from "@/content/insights/types";
+import { useSeo } from "@/lib/seo";
 
 const resources = [
   {
@@ -74,6 +75,13 @@ function ArticleCard({ article }: { article: InsightMeta }) {
 }
 
 export default function Insights() {
+  useSeo({
+    title: "Insights",
+    description:
+      "Artigos técnico-científicos, cases e recursos gratuitos sobre gestão de mudanças, transformação digital, liderança 5.0, Agile Change e governança de IA.",
+    path: "/insights",
+  });
+
   const allArticles = useMemo(() => getAllInsightCards(), []);
   const categories = useMemo(() => {
     const set = new Set<InsightCategory>();

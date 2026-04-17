@@ -2,8 +2,16 @@ import Layout from "@/components/layout/Layout";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useSeo } from "@/lib/seo";
 
 export default function Metodologia() {
+  useSeo({
+    title: "Metodologia collab:Z",
+    description:
+      "Metodologia proprietária que articula gestão, estratégia e operação em torno dos pilares LaMarsh Managed Change™, Prosci ADKAR, Kotter e Agile Change — calibrada ao contexto de cada cliente.",
+    path: "/metodologia",
+  });
+
   return (
     <Layout>
       <div className="pt-32 pb-16 relative" style={{ background: "linear-gradient(135deg, #0B3D5C, #072A40)" }}>

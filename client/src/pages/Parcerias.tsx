@@ -2,8 +2,16 @@ import Layout from "@/components/layout/Layout";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useSeo } from "@/lib/seo";
 
 export default function Parcerias() {
+  useSeo({
+    title: "Parcerias",
+    description:
+      "Parcerias internacionais da collab:Z, incluindo ScrumStudy (Authorized Training Provider) e rede de colaboradores em Brasil, LATAM e contextos regulados.",
+    path: "/parcerias",
+  });
+
   return (
     <Layout>
       <div className="pt-32 pb-16 relative" style={{ background: "linear-gradient(135deg, #0B3D5C, #072A40)" }}>

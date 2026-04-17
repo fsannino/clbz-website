@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link, useRoute } from "wouter";
 import {
   ArrowLeft,
@@ -11,6 +10,12 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { getServiceBySlug, services } from "@/content/services";
 import NotFound from "./NotFound";
+import {
+  useSeo,
+  buildServiceJsonLd,
+  buildBreadcrumbJsonLd,
+  SITE,
+} from "@/lib/seo";
 
 const accentMap = {
   gold: {
@@ -44,14 +49,32 @@ export default function ServiceDetail() {
   const slug = params?.slug ?? "";
   const entry = getServiceBySlug(slug);
 
-  useEffect(() => {
-    if (!entry) return;
-    const prev = document.title;
-    document.title = `${entry.meta.title} — Serviços CollabZ`;
-    return () => {
-      document.title = prev;
-    };
-  }, [entry]);
+  useSeo(
+    entry
+      ? {
+          title: entry.meta.title,
+          description: entry.meta.excerpt,
+          path: `/servicos/${entry.meta.slug}`,
+          type: "website",
+          jsonLd: [
+            buildServiceJsonLd({
+              name: entry.meta.title,
+              description: entry.meta.excerpt,
+              slug: entry.meta.slug,
+              category: entry.meta.pillar,
+            }),
+            buildBreadcrumbJsonLd([
+              { name: "Home", url: "/" },
+              { name: "Soluções", url: "/servicos" },
+              {
+                name: entry.meta.title,
+                url: `${SITE.baseUrl}/servicos/${entry.meta.slug}`,
+              },
+            ]),
+          ],
+        }
+      : { title: "Serviço não encontrado", path: "/servicos", noIndex: true },
+  );
 
   if (!entry) return <NotFound />;
 

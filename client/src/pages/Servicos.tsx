@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { services } from "@/content/services";
 import type { ServicePillar } from "@/content/services/types";
+import { useSeo } from "@/lib/seo";
 
 const pillarDescriptions: Record<ServicePillar, string> = {
   Estratégia:
@@ -23,6 +24,13 @@ const accentMap = {
 } as const;
 
 export default function Servicos() {
+  useSeo({
+    title: "Soluções",
+    description:
+      "Portfólio completo de consultoria em gestão, estratégia, operação e pessoas: Eficiência Operacional, PMO, Post-Merger Integration, Redesenho Organizacional, Gestão de Mudanças, Estratégia de RH, Dados e IA, Governança e Reestruturação.",
+    path: "/servicos",
+  });
+
   return (
     <Layout>
       {/* Hero */}
