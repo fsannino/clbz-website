@@ -51,13 +51,22 @@ export default function Home() {
           aria-hidden="true"
           loading="eager"
           fetchPriority="high"
-          className="absolute inset-0 w-full h-full object-cover opacity-35"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Left-to-right scrim so the headline keeps contrast while
+            the image stays visible on the right half of the hero */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(7,42,64,0.92) 0%, rgba(11,61,92,0.78) 35%, rgba(11,61,92,0.35) 70%, rgba(11,61,92,0.15) 100%)",
+          }}
         />
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(135deg, rgba(11,61,92,0.88) 0%, rgba(7,42,64,0.92) 60%, rgba(30,45,61,0.95) 100%)",
+              "linear-gradient(180deg, rgba(7,42,64,0.25) 0%, transparent 30%, transparent 70%, rgba(7,42,64,0.35) 100%)",
           }}
         />
         <div className="absolute inset-0">
