@@ -3,6 +3,8 @@ import Layout from "@/components/layout/Layout";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock } from "lucide-react";
+import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 import { getAllInsightCards } from "@/content/insights";
 import type { InsightCategory, InsightMeta } from "@/content/insights/types";
 
@@ -80,6 +82,27 @@ export default function Insights() {
   }, [allArticles]);
 
   const [activeCat, setActiveCat] = useState<string>("Todos");
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+
+  const subscribeMutation = trpc.contact.subscribeNewsletter.useMutation({
+    onSuccess: (data) => {
+      if (data.success) {
+        setSubscribed(true);
+        setNewsletterEmail("");
+        toast.success("Inscrição registrada! Em breve você receberá novidades.");
+      } else {
+        toast.error("Não foi possível registrar agora. Tente novamente em instantes.");
+      }
+    },
+    onError: (err) => toast.error(err.message || "E-mail inválido."),
+  });
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail) return;
+    subscribeMutation.mutate({ email: newsletterEmail, source: "change-pulse" });
+  };
   const filtered =
     activeCat === "Todos"
       ? allArticles
@@ -182,16 +205,32 @@ export default function Insights() {
               <p className="text-white/65 mb-8 max-w-md mx-auto">
                 Artigos, tendências e ferramentas sobre gestão de mudanças — quinzenalmente.
               </p>
-              <div className="flex gap-3 max-w-md mx-auto">
-                <input
-                  type="email"
-                  placeholder="seu@email.com"
-                  className="flex-1 px-4 py-3 rounded-md border-none bg-white text-foreground text-sm"
-                />
-                <Button className="bg-gold hover:bg-gold-light text-navy-dark font-semibold rounded-md">
-                  Assinar
-                </Button>
-              </div>
+              {subscribed ? (
+                <p className="text-white text-sm bg-white/10 rounded-md px-4 py-3 max-w-md mx-auto">
+                  ✓ Inscrição registrada. Aguarde a próxima edição.
+                </p>
+              ) : (
+                <form
+                  onSubmit={handleSubscribe}
+                  className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+                >
+                  <input
+                    type="email"
+                    required
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    placeholder="seu@email.com"
+                    className="flex-1 px-4 py-3 rounded-md border-none bg-white text-foreground text-sm outline-none"
+                  />
+                  <Button
+                    type="submit"
+                    disabled={subscribeMutation.isPending}
+                    className="bg-gold hover:bg-gold-light text-navy-dark font-semibold rounded-md disabled:opacity-60"
+                  >
+                    {subscribeMutation.isPending ? "Enviando..." : "Assinar"}
+                  </Button>
+                </form>
+              )}
             </div>
           </div>
         </div>
