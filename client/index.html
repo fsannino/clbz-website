@@ -37,6 +37,10 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate" type="application/rss+xml" title="collab:Z — Insights" href="/insights/rss.xml" />
 
+    <!-- Analytics (Plausible — cookieless, LGPD-friendly).
+         Só carrega quando VITE_PLAUSIBLE_DOMAIN está setado (produção).
+         Script é injetado via app boot em main.tsx se habilitado. -->
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

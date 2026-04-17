@@ -11,24 +11,33 @@ import { useSeo } from "@/lib/seo";
 
 const resources = [
   {
+    emoji: "✅",
+    title: "Checklist de Prontidão",
+    desc: "Diagnóstico interativo em 5 a 7 minutos. 20 perguntas em 5 dimensões, score imediato com faixa de prontidão e próximos passos.",
+    border: "border-t-teal",
+    href: "/recursos/checklist-prontidao",
+    cta: "Fazer diagnóstico →",
+    available: true,
+  },
+  {
     emoji: "📘",
     title: "5 Erros Fatais na Gestão de Mudanças",
     desc: "eBook com os equívocos mais comuns e como evitá-los.",
     border: "border-t-gold",
-  },
-  {
-    emoji: "✅",
-    title: "Checklist de Prontidão",
-    desc: "20 perguntas essenciais para avaliar se sua organização está pronta.",
-    border: "border-t-teal",
+    href: "/insights/5-erros-fatais-gestao-mudancas",
+    cta: "Ler artigo →",
+    available: true,
   },
   {
     emoji: "📋",
     title: "Template Plano de Comunicação",
     desc: "Modelo pronto para estruturar comunicação em qualquer mudança.",
     border: "border-t-navy",
+    href: null,
+    cta: "Em breve",
+    available: false,
   },
-];
+] as const;
 
 function ArticleCard({ article }: { article: InsightMeta }) {
   const isPublished = article.status === "published";
@@ -180,19 +189,36 @@ export default function Insights() {
             eBooks, checklists e templates para ajudar na mudança organizacional.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {resources.map((r) => (
-              <div
-                key={r.title}
-                className={`bg-white rounded-lg p-7 border border-border border-t-[3px] ${r.border} hover:shadow-md transition-all cursor-pointer`}
-              >
-                <div className="text-3xl mb-3">{r.emoji}</div>
-                <h3 className="font-display text-lg text-navy mb-2">{r.title}</h3>
-                <p className="text-sm text-gray-medium mb-4">{r.desc}</p>
-                <span className="text-sm font-semibold text-teal flex items-center gap-1">
-                  Em breve <ArrowRight className="w-3.5 h-3.5" />
-                </span>
-              </div>
-            ))}
+            {resources.map((r) => {
+              const card = (
+                <div
+                  className={`bg-white rounded-lg p-7 border border-border border-t-[3px] ${r.border} h-full flex flex-col transition-all ${
+                    r.available
+                      ? "hover:shadow-md hover:-translate-y-1 cursor-pointer"
+                      : "opacity-70"
+                  }`}
+                >
+                  <div className="text-3xl mb-3">{r.emoji}</div>
+                  <h3 className="font-display text-lg text-navy mb-2">{r.title}</h3>
+                  <p className="text-sm text-gray-medium mb-4 flex-1">{r.desc}</p>
+                  <span
+                    className={`text-sm font-semibold flex items-center gap-1 ${
+                      r.available ? "text-teal" : "text-gray-medium"
+                    }`}
+                  >
+                    {r.cta}{" "}
+                    {r.available && <ArrowRight className="w-3.5 h-3.5" />}
+                  </span>
+                </div>
+              );
+              return r.available && r.href ? (
+                <Link key={r.title} href={r.href}>
+                  {card}
+                </Link>
+              ) : (
+                <div key={r.title}>{card}</div>
+              );
+            })}
           </div>
         </div>
       </section>
