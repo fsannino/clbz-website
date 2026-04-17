@@ -298,6 +298,37 @@
     border-radius: 4px;
     font-size: 0.9em;
   }
+  .article-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .article-body thead {
+    background: rgba(11, 61, 92, 0.06);
+  }
+  .article-body th {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    text-align: left;
+    color: var(--navy);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .article-body td {
+    padding: 0.75rem 1rem;
+    color: var(--slate);
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .article-body tbody tr:hover {
+    background: rgba(26, 110, 142, 0.03);
+  }
 
   /* Callouts */
   .article-body .callout {
@@ -533,6 +564,33 @@
   .service-body a {
     color: #0B3D5C !important;
     text-decoration: underline !important;
+  }
+  .article-body table,
+  .service-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4mm 0;
+    font-size: 9.5pt !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .article-body thead,
+  .service-body thead {
+    background: #F0EDE8 !important;
+  }
+  .article-body th,
+  .service-body th {
+    text-align: left;
+    padding: 2mm 3mm;
+    border-bottom: 1.5pt solid #0B3D5C;
+    font-weight: 600;
+    color: #0B3D5C !important;
+  }
+  .article-body td,
+  .service-body td {
+    padding: 2mm 3mm;
+    border-top: 0.5pt solid #CCC;
+    vertical-align: top;
   }
 
   /* Page footer — institutional */
