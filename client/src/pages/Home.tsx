@@ -44,8 +44,25 @@ export default function Home() {
   return (
     <Layout>
       {/* Hero */}
-      <section className="relative min-h-[85vh] flex items-center overflow-hidden" style={{ background: "linear-gradient(135deg, #0B3D5C 0%, #072A40 60%, #1E2D3D 100%)" }}>
-        <div className="absolute inset-0"><div className="absolute top-[-50%] right-[-20%] w-[80%] h-[200%] bg-[radial-gradient(ellipse,rgba(26,110,142,0.15)_0%,transparent_60%)]" /></div>
+      <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-navy-dark">
+        <img
+          src="/images/hero-bg.jpg"
+          alt=""
+          aria-hidden="true"
+          loading="eager"
+          fetchPriority="high"
+          className="absolute inset-0 w-full h-full object-cover opacity-35"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(11,61,92,0.88) 0%, rgba(7,42,64,0.92) 60%, rgba(30,45,61,0.95) 100%)",
+          }}
+        />
+        <div className="absolute inset-0">
+          <div className="absolute top-[-50%] right-[-20%] w-[80%] h-[200%] bg-[radial-gradient(ellipse,rgba(26,110,142,0.15)_0%,transparent_60%)]" />
+        </div>
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gold via-teal to-gold" />
         <div className="container relative z-10 pt-24">
           <div className="max-w-3xl space-y-6">
