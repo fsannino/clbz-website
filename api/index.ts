@@ -1,11 +1,9 @@
 import "dotenv/config";
-import type { IncomingMessage, ServerResponse } from "node:http";
 import { createApiApp } from "../server/_core/app";
 
-// Build the Express app once per cold start; Vercel reuses the instance
-// across invocations, giving us a warm connection pool for DB / SDK.
+// Build the Express app once per cold start; Vercel's Node runtime
+// reuses the instance across invocations. Express apps are valid
+// Node request handlers, so exporting it directly works.
 const app = createApiApp();
 
-export default function handler(req: IncomingMessage, res: ServerResponse) {
-  return app(req, res);
-}
+export default app;
