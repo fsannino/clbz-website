@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link, useRoute } from "wouter";
-import { ArrowLeft, ArrowRight, Clock, Calendar, Share2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Calendar, Share2, Printer } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -38,6 +38,10 @@ export default function InsightArticle() {
   const related = insights
     .filter((i) => i.meta.slug !== meta.slug)
     .slice(0, 3);
+
+  const handlePrint = () => {
+    if (typeof window !== "undefined") window.print();
+  };
 
   const share = async () => {
     const url = typeof window !== "undefined" ? window.location.href : "";
@@ -110,14 +114,42 @@ export default function InsightArticle() {
       </header>
 
       {/* Body */}
-      <article className="py-16">
+      <article className="py-16" data-print-root>
         <div className="container max-w-3xl">
+          {/* Print-only header: shown instead of the web hero on the printed page */}
+          <div className="print-header" aria-hidden="true">
+            <div className="print-header-brand">
+              collab<span style={{ color: "#F7A823" }}>:</span>Z
+            </div>
+            <div className="print-header-meta">
+              <div className="print-header-cat">{meta.category}</div>
+              <h1 className="print-header-title">{meta.title}</h1>
+              <p className="print-header-excerpt">{meta.excerpt}</p>
+              <p className="print-header-byline">
+                {meta.author.name} · {meta.author.role} ·{" "}
+                {formatDate(meta.publishedAt)} · {meta.readTimeMin} min de leitura
+              </p>
+            </div>
+          </div>
+
           <div className="article-body">
             <Component />
           </div>
 
-          {/* Share + back */}
-          <div className="mt-12 pt-8 border-t border-border flex flex-wrap items-center justify-between gap-4">
+          {/* Print-only footer */}
+          <div className="print-footer" aria-hidden="true">
+            <p>
+              © {new Date().getUTCFullYear()} collab:Z — Collaborazione Assessoria. Todos os
+              direitos reservados.
+            </p>
+            <p>
+              Leitura online, cases e recursos gratuitos em{" "}
+              <strong>www.clbz.com.br/insights</strong>
+            </p>
+          </div>
+
+          {/* Actions — hidden on print */}
+          <div className="no-print mt-12 pt-8 border-t border-border flex flex-wrap items-center justify-between gap-4">
             <Link href="/insights">
               <Button
                 variant="outline"
@@ -126,20 +158,30 @@ export default function InsightArticle() {
                 <ArrowLeft className="w-4 h-4 mr-1" /> Voltar para Insights
               </Button>
             </Link>
-            <Button
-              onClick={share}
-              variant="outline"
-              className="border-navy text-navy hover:bg-navy/5 rounded-md text-sm"
-            >
-              <Share2 className="w-4 h-4 mr-1" /> Compartilhar
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                onClick={handlePrint}
+                variant="outline"
+                className="border-gold text-navy hover:bg-gold/10 rounded-md text-sm"
+                aria-label="Imprimir ou salvar como PDF"
+              >
+                <Printer className="w-4 h-4 mr-1" /> Imprimir / PDF
+              </Button>
+              <Button
+                onClick={share}
+                variant="outline"
+                className="border-navy text-navy hover:bg-navy/5 rounded-md text-sm"
+              >
+                <Share2 className="w-4 h-4 mr-1" /> Compartilhar
+              </Button>
+            </div>
           </div>
         </div>
       </article>
 
       {/* Related */}
       {related.length > 0 && (
-        <section className="py-16 bg-muted">
+        <section className="no-print py-16 bg-muted">
           <div className="container max-w-5xl">
             <p className="section-tag">Continue lendo</p>
             <h2 className="section-title">Outros insights</h2>
@@ -164,7 +206,7 @@ export default function InsightArticle() {
       )}
 
       {/* CTA */}
-      <section className="py-16">
+      <section className="no-print py-16">
         <div className="container max-w-3xl">
           <div
             className="rounded-xl p-10 md:p-14 text-center text-white relative overflow-hidden"
