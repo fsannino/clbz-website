@@ -328,6 +328,67 @@
     border-left: 3px solid var(--navy);
     color: var(--slate);
   }
+
+  /* Service body typography — reuses article-body tokens */
+  .service-body {
+    color: var(--slate);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+  .service-body > * + * {
+    margin-top: 1.25rem;
+  }
+  .service-body h3 {
+    font-family: var(--font-display);
+    color: var(--navy);
+    font-size: 1.375rem;
+    line-height: 1.3;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .service-body .lead {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--navy);
+    font-weight: 500;
+  }
+  .service-body strong {
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .service-body em { font-style: italic; }
+  .service-body a {
+    color: var(--teal);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .service-body a:hover { color: var(--navy); }
+  .service-body ul,
+  .service-body ol { padding-left: 1.5rem; }
+  .service-body ul { list-style: disc; }
+  .service-body ol { list-style: decimal; }
+  .service-body li + li { margin-top: 0.5rem; }
+  .service-body li::marker { color: var(--teal); }
+  .service-body .callout {
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.75rem 0;
+    font-size: 1rem;
+  }
+  .service-body .callout strong { color: inherit; }
+  .service-body .callout-teal {
+    background: rgba(26, 110, 142, 0.06);
+    border-left: 3px solid var(--teal);
+  }
+  .service-body .callout-gold {
+    background: rgba(247, 168, 35, 0.08);
+    border-left: 3px solid var(--gold);
+  }
+  .service-body .callout-navy {
+    background: rgba(11, 61, 92, 0.05);
+    border-left: 3px solid var(--navy);
+  }
 }
 
 @layer utilities {
