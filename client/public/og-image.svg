@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B3D5C"/>
+      <stop offset="55%" stop-color="#072A40"/>
+      <stop offset="100%" stop-color="#1E2D3D"/>
+    </linearGradient>
+    <radialGradient id="accent" cx="85%" cy="15%" r="55%">
+      <stop offset="0%" stop-color="rgba(26, 110, 142, 0.35)"/>
+      <stop offset="100%" stop-color="rgba(26, 110, 142, 0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#accent)"/>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="626" width="1200" height="4" fill="#F7A823"/>
+
+  <!-- Logo (4 quadrados) -->
+  <g transform="translate(80, 140)">
+    <rect x="0" y="0" width="52" height="52" rx="6" fill="#0B3D5C"/>
+    <rect x="60" y="0" width="52" height="52" rx="6" fill="#1A6E8E"/>
+    <rect x="0" y="60" width="52" height="52" rx="6" fill="#F7A823"/>
+    <rect x="60" y="60" width="52" height="52" rx="6" fill="#94A3B8"/>
+  </g>
+
+  <!-- Brand -->
+  <g transform="translate(80, 280)">
+    <text font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="800" font-size="52" fill="#FFFFFF" letter-spacing="0.01em">
+      collab<tspan fill="#F7A823">:</tspan>Z
+    </text>
+    <text y="34" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="600" font-size="16" fill="#F7A823" letter-spacing="0.18em">
+      INNOVATION &amp; STRATEGY
+    </text>
+  </g>
+
+  <!-- Tagline -->
+  <g transform="translate(80, 410)">
+    <text font-family="'DM Serif Display', Georgia, serif" font-size="64" fill="#FFFFFF">
+      Transformação que funciona.
+    </text>
+    <text y="76" font-family="'DM Serif Display', Georgia, serif" font-size="64" font-style="italic" fill="#F7A823">
+      De verdade.
+    </text>
+  </g>
+
+  <!-- URL -->
+  <text x="80" y="590" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="18" fill="rgba(255,255,255,0.55)">
+    www.clbz.com.br
+  </text>
+
+  <!-- Corner decoration: large faded 4-square logo -->
+  <g transform="translate(920, 60) scale(2.6)" opacity="0.08">
+    <rect x="0" y="0" width="52" height="52" rx="6" fill="#FFFFFF"/>
+    <rect x="60" y="0" width="52" height="52" rx="6" fill="#FFFFFF"/>
+    <rect x="0" y="60" width="52" height="52" rx="6" fill="#FFFFFF"/>
+    <rect x="60" y="60" width="52" height="52" rx="6" fill="#FFFFFF"/>
+  </g>
+</svg>

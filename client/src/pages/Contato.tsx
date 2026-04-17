@@ -16,6 +16,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { CONTACT, buildWhatsAppLink } from "@shared/const";
+import { useSeo } from "@/lib/seo";
 
 const subjects = [
   "Consultoria",
@@ -45,6 +46,13 @@ const emptyForm: FormState = {
 };
 
 export default function Contato() {
+  useSeo({
+    title: "Fale Conosco",
+    description:
+      "Conte seu desafio. Respondemos em até 24 horas úteis. WhatsApp, e-mail e agendamento disponíveis.",
+    path: "/contato",
+  });
+
   const [form, setForm] = useState<FormState>(emptyForm);
   const [submitted, setSubmitted] = useState(false);
 

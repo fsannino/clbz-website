@@ -1,41 +1,63 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+
+// Home is rendered eagerly (LCP), the rest is code-split per route
 import Home from "./pages/Home";
-import Sobre from "./pages/Sobre";
-import Servicos from "./pages/Servicos";
-import ServiceDetail from "./pages/ServiceDetail";
-import Metodologia from "./pages/Metodologia";
-import Educacao from "./pages/Educacao";
-import Insights from "./pages/Insights";
-import InsightArticle from "./pages/InsightArticle";
-import Parcerias from "./pages/Parcerias";
-import Contato from "./pages/Contato";
+
+const Sobre = lazy(() => import("./pages/Sobre"));
+const Servicos = lazy(() => import("./pages/Servicos"));
+const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
+const Metodologia = lazy(() => import("./pages/Metodologia"));
+const Educacao = lazy(() => import("./pages/Educacao"));
+const Insights = lazy(() => import("./pages/Insights"));
+const InsightArticle = lazy(() => import("./pages/InsightArticle"));
+const ChecklistProntidao = lazy(() => import("./pages/ChecklistProntidao"));
+const Parcerias = lazy(() => import("./pages/Parcerias"));
+const Contato = lazy(() => import("./pages/Contato"));
+
+function RouteFallback() {
+  return (
+    <div
+      className="min-h-screen flex items-center justify-center"
+      style={{ background: "#F0EDE8" }}
+      role="status"
+      aria-live="polite"
+    >
+      <div className="w-10 h-10 rounded-full border-4 border-navy/15 border-t-navy animate-spin" />
+      <span className="sr-only">Carregando…</span>
+    </div>
+  );
+}
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/sobre" component={Sobre} />
-      <Route path="/servicos" component={Servicos} />
-      <Route path="/servicos/:slug" component={ServiceDetail} />
-      <Route path="/metodologia" component={Metodologia} />
-      <Route path="/educacao" component={Educacao} />
-      <Route path="/insights" component={Insights} />
-      <Route path="/insights/:slug" component={InsightArticle} />
-      <Route path="/parcerias" component={Parcerias} />
-      <Route path="/contato" component={Contato} />
-      {/* Redirects from old routes */}
-      <Route path="/about" component={Sobre} />
-      <Route path="/solutions" component={Servicos} />
-      <Route path="/contact" component={Contato} />
-      <Route path="/industries" component={Servicos} />
-      <Route path="/404" component={NotFound} />
-      <Route component={NotFound} />
-    </Switch>
+    <Suspense fallback={<RouteFallback />}>
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route path="/sobre" component={Sobre} />
+        <Route path="/servicos" component={Servicos} />
+        <Route path="/servicos/:slug" component={ServiceDetail} />
+        <Route path="/metodologia" component={Metodologia} />
+        <Route path="/educacao" component={Educacao} />
+        <Route path="/insights" component={Insights} />
+        <Route path="/insights/:slug" component={InsightArticle} />
+        <Route path="/recursos/checklist-prontidao" component={ChecklistProntidao} />
+        <Route path="/parcerias" component={Parcerias} />
+        <Route path="/contato" component={Contato} />
+        {/* Redirects from old routes */}
+        <Route path="/about" component={Sobre} />
+        <Route path="/solutions" component={Servicos} />
+        <Route path="/contact" component={Contato} />
+        <Route path="/industries" component={Servicos} />
+        <Route path="/404" component={NotFound} />
+        <Route component={NotFound} />
+      </Switch>
+    </Suspense>
   );
 }
 

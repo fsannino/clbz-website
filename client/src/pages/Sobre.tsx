@@ -2,8 +2,16 @@ import Layout from "@/components/layout/Layout";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Target, Handshake, Ruler, FlaskConical } from "lucide-react";
+import { useSeo } from "@/lib/seo";
 
 export default function Sobre() {
+  useSeo({
+    title: "Sobre a collab:Z",
+    description:
+      "Consultoria boutique sediada em São Paulo, especializada em transformação organizacional para ambientes complexos e regulados. Missão, visão, valores e história.",
+    path: "/sobre",
+  });
+
   return (
     <Layout>
       {/* Header */}

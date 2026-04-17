@@ -3,6 +3,7 @@ import { ArrowRight, Settings, GraduationCap, Lightbulb, Star, TrendingUp, BarCh
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
+import { useSeo } from "@/lib/seo";
 
 function AnimatedCounter({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
   const [count, setCount] = useState(0);
@@ -41,6 +42,14 @@ const sectors = [
 ];
 
 export default function Home() {
+  useSeo({
+    title: "Transformação que funciona. De verdade.",
+    description:
+      "Consultoria boutique em transformação organizacional, gestão de mudanças, estratégia, PMO e tecnologia aplicada. Integramos as melhores práticas internacionais, sob medida para cada cliente.",
+    path: "/",
+    type: "website",
+  });
+
   return (
     <Layout>
       {/* Hero */}

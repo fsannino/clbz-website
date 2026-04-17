@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link, useRoute } from "wouter";
 import {
   ArrowLeft,
@@ -6,11 +5,18 @@ import {
   CheckCircle2,
   AlertTriangle,
   HelpCircle,
+  Printer,
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { getServiceBySlug, services } from "@/content/services";
 import NotFound from "./NotFound";
+import {
+  useSeo,
+  buildServiceJsonLd,
+  buildBreadcrumbJsonLd,
+  SITE,
+} from "@/lib/seo";
 
 const accentMap = {
   gold: {
@@ -44,14 +50,32 @@ export default function ServiceDetail() {
   const slug = params?.slug ?? "";
   const entry = getServiceBySlug(slug);
 
-  useEffect(() => {
-    if (!entry) return;
-    const prev = document.title;
-    document.title = `${entry.meta.title} — Serviços CollabZ`;
-    return () => {
-      document.title = prev;
-    };
-  }, [entry]);
+  useSeo(
+    entry
+      ? {
+          title: entry.meta.title,
+          description: entry.meta.excerpt,
+          path: `/servicos/${entry.meta.slug}`,
+          type: "website",
+          jsonLd: [
+            buildServiceJsonLd({
+              name: entry.meta.title,
+              description: entry.meta.excerpt,
+              slug: entry.meta.slug,
+              category: entry.meta.pillar,
+            }),
+            buildBreadcrumbJsonLd([
+              { name: "Home", url: "/" },
+              { name: "Soluções", url: "/servicos" },
+              {
+                name: entry.meta.title,
+                url: `${SITE.baseUrl}/servicos/${entry.meta.slug}`,
+              },
+            ]),
+          ],
+        }
+      : { title: "Serviço não encontrado", path: "/servicos", noIndex: true },
+  );
 
   if (!entry) return <NotFound />;
 
@@ -139,7 +163,7 @@ export default function ServiceDetail() {
       </header>
 
       {/* Benefits */}
-      <section className="py-20">
+      <section className="no-print py-20">
         <div className="container">
           <p className="section-tag">Benefícios</p>
           <h2 className="section-title">Por que escolher a collab:Z?</h2>
@@ -169,7 +193,7 @@ export default function ServiceDetail() {
       </section>
 
       {/* Methodology */}
-      <section className="py-20 bg-cream">
+      <section className="no-print py-20 bg-cream">
         <div className="container">
           <p className="section-tag">Nossa Metodologia</p>
           <h2 className="section-title">Como conduzimos o trabalho</h2>
@@ -203,7 +227,7 @@ export default function ServiceDetail() {
       </section>
 
       {/* Applications */}
-      <section className="py-20">
+      <section className="no-print py-20">
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             <div className="lg:col-span-5">
@@ -232,7 +256,7 @@ export default function ServiceDetail() {
       </section>
 
       {/* Differentials */}
-      <section className="py-20 bg-muted">
+      <section className="no-print py-20 bg-muted">
         <div className="container">
           <p className="section-tag">Diferenciais collab:Z</p>
           <h2 className="section-title">O que nos diferencia</h2>
@@ -252,7 +276,7 @@ export default function ServiceDetail() {
 
       {/* Cases (if any) */}
       {meta.cases && meta.cases.length > 0 && (
-        <section className="py-20">
+        <section className="no-print py-20">
           <div className="container">
             <p className="section-tag">Cases de sucesso</p>
             <h2 className="section-title">Histórico de resultados</h2>
@@ -275,9 +299,31 @@ export default function ServiceDetail() {
       )}
 
       {/* Guide (free-form article) */}
-      <section className="py-20 bg-cream">
+      <section className="py-20 bg-cream" data-print-root>
         <div className="container max-w-4xl">
-          <p className="section-tag">Guia Completo</p>
+          {/* Print-only header */}
+          <div className="print-header" aria-hidden="true">
+            <div className="print-header-brand">
+              collab<span style={{ color: "#F7A823" }}>:</span>Z
+            </div>
+            <div className="print-header-meta">
+              <div className="print-header-cat">Solução · {meta.pillar}</div>
+              <h1 className="print-header-title">{meta.title}</h1>
+              <p className="print-header-excerpt">{meta.tagline}</p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4 no-print">
+            <p className="section-tag m-0">Guia Completo</p>
+            <Button
+              onClick={() => typeof window !== "undefined" && window.print()}
+              variant="outline"
+              className="border-gold text-navy hover:bg-gold/10 rounded-md text-sm"
+              aria-label="Imprimir ou salvar como PDF"
+            >
+              <Printer className="w-4 h-4 mr-1" /> Imprimir / PDF
+            </Button>
+          </div>
           <h2 className="section-title">{meta.title}: o que você precisa saber</h2>
           {meta.guideQuestions && meta.guideQuestions.length > 0 && (
             <div className="bg-white border border-border rounded-lg p-6 mb-10">
@@ -298,12 +344,22 @@ export default function ServiceDetail() {
           <div className="service-body">
             <Component />
           </div>
+          <div className="print-footer" aria-hidden="true">
+            <p>
+              © {new Date().getUTCFullYear()} collab:Z — Collaborazione Assessoria.
+              Todos os direitos reservados.
+            </p>
+            <p>
+              Esta e outras soluções em{" "}
+              <strong>www.clbz.com.br/servicos</strong>
+            </p>
+          </div>
         </div>
       </section>
 
       {/* Related */}
       {related.length > 0 && (
-        <section className="py-20">
+        <section className="no-print py-20">
           <div className="container max-w-5xl">
             <p className="section-tag">Pilar {meta.pillar}</p>
             <h2 className="section-title">Soluções relacionadas</h2>
@@ -333,7 +389,7 @@ export default function ServiceDetail() {
       )}
 
       {/* CTA */}
-      <section className="py-16">
+      <section className="no-print py-16">
         <div className="container max-w-3xl">
           <div
             className="rounded-xl p-10 md:p-14 text-center text-white relative overflow-hidden"

@@ -30,6 +30,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans">
+      {/* Skip link for keyboard users */}
+      <a
+        href="#main-content"
+        className="skip-link focus:outline-none focus:ring-2 focus:ring-gold"
+      >
+        Pular para o conteúdo
+      </a>
       {/* Header */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -134,7 +141,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1">{children}</main>
+      <main id="main-content" className="flex-1">
+        {children}
+      </main>
 
       {/* Floating WhatsApp Button */}
       <a

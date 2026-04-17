@@ -8,6 +8,27 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
 
+/**
+ * Plausible Analytics — cookieless, LGPD-friendly, ativa apenas quando
+ * VITE_PLAUSIBLE_DOMAIN está configurado (normalmente em produção).
+ * Sem cookies = sem banner de consentimento obrigatório.
+ */
+function bootAnalytics() {
+  if (typeof document === "undefined") return;
+  const domain = import.meta.env.VITE_PLAUSIBLE_DOMAIN as string | undefined;
+  if (!domain) return;
+  const host =
+    (import.meta.env.VITE_PLAUSIBLE_HOST as string | undefined) ||
+    "https://plausible.io";
+  const script = document.createElement("script");
+  script.defer = true;
+  script.dataset.domain = domain;
+  script.src = `${host}/js/script.js`;
+  document.head.appendChild(script);
+}
+
+bootAnalytics();
+
 const queryClient = new QueryClient();
 
 const redirectToLoginIfUnauthorized = (error: unknown) => {
