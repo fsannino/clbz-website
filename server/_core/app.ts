@@ -13,6 +13,22 @@ export function createApiApp(): Express {
   app.use(express.json({ limit: "2mb" }));
   app.use(express.urlencoded({ limit: "2mb", extended: true }));
 
+  app.get("/api/health", (_req, res) => {
+    res.json({
+      ok: true,
+      now: new Date().toISOString(),
+      node: process.version,
+      hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
+      hasSupabaseUrl: Boolean(
+        process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL,
+      ),
+      hasSupabaseAnonKey: Boolean(
+        process.env.SUPABASE_ANON_KEY ?? process.env.VITE_SUPABASE_ANON_KEY,
+      ),
+      hasServiceRoleKey: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
+    });
+  });
+
   app.use(
     "/api/trpc",
     createExpressMiddleware({
