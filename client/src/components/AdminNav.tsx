@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 const tabs = [
   { href: "/admin", label: "Usuários" },
   { href: "/admin/resources", label: "Recursos" },
+  { href: "/admin/audit", label: "Auditoria" },
 ];
 
 export function AdminNav() {

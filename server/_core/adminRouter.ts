@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import * as db from "../db";
+import { logAudit } from "./audit";
 import { createSupabaseAdmin } from "./supabase";
 import { adminProcedure, router } from "./trpc";
 
@@ -22,6 +23,18 @@ export const adminRouter = router({
 
   stats: adminProcedure.query(async () => db.countUsersByRole()),
 
+  listAudit: adminProcedure
+    .input(
+      z
+        .object({
+          limit: z.number().int().min(1).max(500).optional(),
+          offset: z.number().int().min(0).optional(),
+          action: z.string().trim().max(64).optional(),
+        })
+        .optional(),
+    )
+    .query(async ({ input }) => db.listAudit(input ?? {})),
+
   updateRole: adminProcedure
     .input(z.object({ supabaseId: supabaseIdSchema, role: roleEnum }))
     .mutation(async ({ input, ctx }) => {
@@ -32,6 +45,13 @@ export const adminRouter = router({
         });
       }
       await db.updateUserRole(input.supabaseId, input.role);
+      await logAudit({
+        actorId: ctx.user.id,
+        action: "user.role.change",
+        targetType: "user",
+        metadata: { supabaseId: input.supabaseId, role: input.role },
+        req: ctx.req,
+      });
       return { success: true } as const;
     }),
 
@@ -42,8 +62,18 @@ export const adminRouter = router({
         isActiveClient: z.boolean(),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       await db.setUserActiveClient(input.supabaseId, input.isActiveClient);
+      await logAudit({
+        actorId: ctx.user.id,
+        action: "user.active.change",
+        targetType: "user",
+        metadata: {
+          supabaseId: input.supabaseId,
+          isActiveClient: input.isActiveClient,
+        },
+        req: ctx.req,
+      });
       return { success: true } as const;
     }),
 
@@ -59,12 +89,23 @@ export const adminRouter = router({
         granted: z.boolean().nullable(),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       if (input.granted === null) {
         await db.clearOverride(input.userId, input.resourceId);
       } else {
         await db.upsertOverride(input.userId, input.resourceId, input.granted);
       }
+      await logAudit({
+        actorId: ctx.user.id,
+        action: "override.set",
+        targetType: "user",
+        targetId: input.userId,
+        metadata: {
+          resourceId: input.resourceId,
+          granted: input.granted,
+        },
+        req: ctx.req,
+      });
       return { success: true } as const;
     }),
 
@@ -93,6 +134,13 @@ export const adminRouter = router({
           "[adminRouter] SUPABASE_SERVICE_ROLE_KEY not set — auth user kept.",
         );
       }
+      await logAudit({
+        actorId: ctx.user.id,
+        action: "user.delete",
+        targetType: "user",
+        metadata: { supabaseId: input.supabaseId },
+        req: ctx.req,
+      });
       return { success: true } as const;
     }),
 });

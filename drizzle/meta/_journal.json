@@ -15,6 +15,13 @@
       "when": 1776545522500,
       "tag": "0001_amused_korath",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776546508727,
+      "tag": "0002_thick_natasha_romanoff",
+      "breakpoints": true
     }
   ]
 }

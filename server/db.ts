@@ -2,7 +2,9 @@ import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import {
+  auditLog,
   categories,
+  InsertAuditLog,
   InsertCategory,
   InsertResource,
   InsertUser,
@@ -359,6 +361,83 @@ export async function getUserById(id: number) {
   if (!db) return undefined;
   const rows = await db.select().from(users).where(eq(users.id, id)).limit(1);
   return rows[0];
+}
+
+// ---------- audit log ----------
+
+export async function insertAudit(entry: InsertAuditLog): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  try {
+    await db.insert(auditLog).values(entry);
+  } catch (error) {
+    console.warn("[audit] insert failed:", error);
+  }
+}
+
+export type ListAuditOptions = {
+  limit?: number;
+  offset?: number;
+  actorId?: number;
+  action?: string;
+};
+
+export async function listAudit(options: ListAuditOptions = {}) {
+  const db = await getDb();
+  if (!db) return [];
+  const limit = options.limit ?? 200;
+  const offset = options.offset ?? 0;
+
+  const filters = [];
+  if (options.actorId !== undefined)
+    filters.push(eq(auditLog.actorId, options.actorId));
+  if (options.action) filters.push(eq(auditLog.action, options.action));
+
+  const base = db.select().from(auditLog);
+  const filtered =
+    filters.length === 0
+      ? base
+      : filters.length === 1
+        ? base.where(filters[0])
+        : base.where(and(...filters));
+  return filtered.orderBy(desc(auditLog.createdAt)).limit(limit).offset(offset);
+}
+
+export async function listAuditForUser(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select({
+      id: auditLog.id,
+      action: auditLog.action,
+      targetType: auditLog.targetType,
+      targetId: auditLog.targetId,
+      createdAt: auditLog.createdAt,
+    })
+    .from(auditLog)
+    .where(eq(auditLog.actorId, userId))
+    .orderBy(desc(auditLog.createdAt))
+    .limit(500);
+}
+
+// ---------- LGPD ----------
+
+export async function deleteUserById(userId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.delete(users).where(eq(users.id, userId));
+}
+
+export async function setUserConsent(
+  supabaseId: string,
+  consentedAt: Date,
+): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .update(users)
+    .set({ consentedAt })
+    .where(eq(users.supabaseId, supabaseId));
 }
 
 export async function swapCategoryOrder(id: number, direction: "up" | "down") {

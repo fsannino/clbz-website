@@ -24,6 +24,8 @@ const Signup = lazy(() => import("./pages/Signup"));
 const Portal = lazy(() => import("./pages/Portal"));
 const Admin = lazy(() => import("./pages/Admin"));
 const AdminResources = lazy(() => import("./pages/AdminResources"));
+const AdminAudit = lazy(() => import("./pages/AdminAudit"));
+const Privacidade = lazy(() => import("./pages/Privacidade"));
 
 function RouteFallback() {
   return (
@@ -59,6 +61,8 @@ function Router() {
         <Route path="/portal" component={Portal} />
         <Route path="/admin" component={Admin} />
         <Route path="/admin/resources" component={AdminResources} />
+        <Route path="/admin/audit" component={AdminAudit} />
+        <Route path="/privacidade" component={Privacidade} />
         {/* Redirects from old routes */}
         <Route path="/about" component={Sobre} />
         <Route path="/solutions" component={Servicos} />

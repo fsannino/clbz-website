@@ -20,11 +20,18 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [consent, setConsent] = useState(false);
   const [done, setDone] = useState(false);
   const notifyMutation = trpc.accessRequest.notify.useMutation();
+  const recordConsent = trpc.auth.recordConsent.useMutation();
+  const utils = trpc.useUtils();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!consent) {
+      toast.error("Você precisa aceitar a Política de Privacidade.");
+      return;
+    }
     setLoading(true);
     try {
       const { error } = await supabase.auth.signUp({
@@ -50,6 +57,12 @@ export default function Signup() {
         });
       } catch (err) {
         console.warn("[Signup] admin notification failed:", err);
+      }
+      try {
+        await utils.auth.me.invalidate();
+        await recordConsent.mutateAsync();
+      } catch (err) {
+        console.warn("[Signup] recordConsent failed:", err);
       }
       setDone(true);
     } finally {
@@ -153,7 +166,32 @@ export default function Signup() {
                 className="w-full border border-navy/20 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-navy/30"
               />
             </div>
-            <Button type="submit" disabled={loading} className="w-full">
+            <label className="flex items-start gap-2 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                required
+                className="mt-1"
+              />
+              <span>
+                Li e aceito a{" "}
+                <Link
+                  href="/privacidade"
+                  className="text-navy underline"
+                  target="_blank"
+                >
+                  Política de Privacidade
+                </Link>{" "}
+                da collab:Z e consinto com o tratamento dos meus dados
+                pessoais para as finalidades descritas.
+              </span>
+            </label>
+            <Button
+              type="submit"
+              disabled={loading || !consent}
+              className="w-full"
+            >
               {loading ? "Enviando…" : "Solicitar acesso"}
             </Button>
           </form>

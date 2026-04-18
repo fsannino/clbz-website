@@ -1,7 +1,9 @@
 import {
   bigint,
+  bigserial,
   boolean,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   primaryKey,
@@ -57,6 +59,7 @@ export const users = pgTable("users", {
   lastSignedIn: timestamp("last_signed_in", { withTimezone: true })
     .defaultNow()
     .notNull(),
+  consentedAt: timestamp("consented_at", { withTimezone: true }),
 });
 
 export const categories = pgTable("categories", {
@@ -117,6 +120,26 @@ export const userResourceOverrides = pgTable(
   }),
 );
 
+/**
+ * Immutable log of important actions (admin changes + every download).
+ * Keep at most ~12 months of rows; purge older entries offline.
+ */
+export const auditLog = pgTable("audit_log", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  actorId: integer("actor_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  action: varchar("action", { length: 64 }).notNull(),
+  targetType: varchar("target_type", { length: 32 }),
+  targetId: integer("target_id"),
+  metadata: jsonb("metadata"),
+  ip: varchar("ip", { length: 64 }),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Category = typeof categories.$inferSelect;
@@ -126,3 +149,5 @@ export type InsertResource = typeof resources.$inferInsert;
 export type UserResourceOverride = typeof userResourceOverrides.$inferSelect;
 export type InsertUserResourceOverride =
   typeof userResourceOverrides.$inferInsert;
+export type AuditLog = typeof auditLog.$inferSelect;
+export type InsertAuditLog = typeof auditLog.$inferInsert;

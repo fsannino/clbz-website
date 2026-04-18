@@ -230,7 +230,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* Bottom */}
           <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs">
             <span>© 2026 collab:Z — Collaborazione Assessoria. Todos os direitos reservados.</span>
-            <span className="text-white/40">Parceiro: ScrumStudy (ATP)</span>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/privacidade"
+                className="text-white/70 hover:text-gold transition-colors"
+              >
+                Política de Privacidade
+              </Link>
+              <span className="text-white/40">Parceiro: ScrumStudy (ATP)</span>
+            </div>
           </div>
         </div>
       </footer>

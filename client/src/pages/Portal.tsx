@@ -9,7 +9,7 @@ import { CONTACT } from "@shared/const";
 import { Download, Github, Star } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 const ROLE_LABEL: Record<string, string> = {
   pending: "Em análise",
@@ -45,8 +45,52 @@ export default function Portal() {
     enabled: canSeeResources,
   });
   const downloadMut = trpc.resources.getDownloadUrl.useMutation();
+  const utils = trpc.useUtils();
+  const [, setLocation] = useLocation();
 
   const [search, setSearch] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  async function handleExport() {
+    setExporting(true);
+    try {
+      const data = await utils.auth.exportMyData.fetch();
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `meus-dados-collabz-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("Exportação concluída.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha ao exportar.");
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  const deleteAccountMut = trpc.auth.deleteMyAccount.useMutation();
+  async function handleDeleteAccount() {
+    const ok = confirm(
+      "Excluir sua conta apaga seus dados e encerra sua sessão. Esta ação é irreversível. Deseja continuar?",
+    );
+    if (!ok) return;
+    setDeleting(true);
+    try {
+      await deleteAccountMut.mutateAsync();
+      toast.success("Conta excluída.");
+      setLocation("/");
+      window.location.reload();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha ao excluir.");
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   async function handleDownload(resourceId: number) {
     try {
@@ -267,6 +311,37 @@ export default function Portal() {
               ))}
             </div>
           )}
+
+          <div className="mt-12 pt-8 border-t border-navy/10">
+            <h2 className="text-xl text-navy mb-2">Seus dados (LGPD)</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              Você pode exportar tudo o que armazenamos sobre você ou
+              excluir sua conta a qualquer momento. Detalhes na{" "}
+              <Link href="/privacidade" className="text-navy underline">
+                Política de Privacidade
+              </Link>
+              .
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                onClick={handleExport}
+                disabled={exporting}
+              >
+                {exporting ? "Gerando…" : "Exportar meus dados (JSON)"}
+              </Button>
+              {role !== "admin" && (
+                <Button
+                  variant="outline"
+                  onClick={handleDeleteAccount}
+                  disabled={deleting}
+                  className="text-red-700 border-red-300 hover:bg-red-50"
+                >
+                  {deleting ? "Excluindo…" : "Excluir minha conta"}
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       </section>
     </Layout>

@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import { z } from "zod";
 import * as db from "../db";
 import type { Resource, User } from "../../drizzle/schema";
+import { logAudit } from "./audit";
 import {
   adminProcedure,
   protectedProcedure,
@@ -78,7 +79,18 @@ export const resourcesRouter = router({
         sortOrder: z.number().int().optional(),
       }),
     )
-    .mutation(async ({ input }) => db.createCategory(input)),
+    .mutation(async ({ input, ctx }) => {
+      const row = await db.createCategory(input);
+      await logAudit({
+        actorId: ctx.user.id,
+        action: "category.create",
+        targetType: "category",
+        targetId: row?.id,
+        metadata: { name: input.name, slug: input.slug },
+        req: ctx.req,
+      });
+      return row;
+    }),
 
   updateCategory: adminProcedure
     .input(
@@ -95,15 +107,31 @@ export const resourcesRouter = router({
         sortOrder: z.number().int().optional(),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const { id, ...patch } = input;
-      return db.updateCategory(id, patch);
+      const row = await db.updateCategory(id, patch);
+      await logAudit({
+        actorId: ctx.user.id,
+        action: "category.update",
+        targetType: "category",
+        targetId: id,
+        metadata: patch,
+        req: ctx.req,
+      });
+      return row;
     }),
 
   deleteCategory: adminProcedure
     .input(z.object({ id: z.number().int().positive() }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       await db.deleteCategory(input.id);
+      await logAudit({
+        actorId: ctx.user.id,
+        action: "category.delete",
+        targetType: "category",
+        targetId: input.id,
+        req: ctx.req,
+      });
       return { success: true } as const;
     }),
 
@@ -114,8 +142,16 @@ export const resourcesRouter = router({
         direction: z.enum(["up", "down"]),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       await db.swapCategoryOrder(input.id, input.direction);
+      await logAudit({
+        actorId: ctx.user.id,
+        action: "category.move",
+        targetType: "category",
+        targetId: input.id,
+        metadata: { direction: input.direction },
+        req: ctx.req,
+      });
       return { success: true } as const;
     }),
 
@@ -201,7 +237,7 @@ export const resourcesRouter = router({
             "Informe um arquivo (upload) ou um link do GitHub para o recurso.",
         });
       }
-      return db.createResource({
+      const row = await db.createResource({
         title: input.title,
         description: input.description || null,
         categoryId: input.categoryId ?? null,
@@ -214,6 +250,15 @@ export const resourcesRouter = router({
         githubUrl: input.githubUrl || null,
         createdBy: ctx.user.id,
       });
+      await logAudit({
+        actorId: ctx.user.id,
+        action: "resource.create",
+        targetType: "resource",
+        targetId: row?.id,
+        metadata: { title: input.title, minTier: input.minTier },
+        req: ctx.req,
+      });
+      return row;
     }),
 
   update: adminProcedure
@@ -234,9 +279,9 @@ export const resourcesRouter = router({
           .or(z.literal("")),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const { id, ...patch } = input;
-      return db.updateResource(id, {
+      const row = await db.updateResource(id, {
         ...patch,
         description: patch.description ?? undefined,
         githubUrl:
@@ -244,11 +289,20 @@ export const resourcesRouter = router({
             ? undefined
             : patch.githubUrl || null,
       });
+      await logAudit({
+        actorId: ctx.user.id,
+        action: "resource.update",
+        targetType: "resource",
+        targetId: id,
+        metadata: patch,
+        req: ctx.req,
+      });
+      return row;
     }),
 
   delete: adminProcedure
     .input(z.object({ id: z.number().int().positive() }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const resource = await db.getResourceById(input.id);
       if (resource?.storagePath) {
         const admin = createSupabaseAdmin();
@@ -262,6 +316,14 @@ export const resourcesRouter = router({
         }
       }
       await db.deleteResource(input.id);
+      await logAudit({
+        actorId: ctx.user.id,
+        action: "resource.delete",
+        targetType: "resource",
+        targetId: input.id,
+        metadata: { title: resource?.title },
+        req: ctx.req,
+      });
       return { success: true } as const;
     }),
 
@@ -274,6 +336,14 @@ export const resourcesRouter = router({
       await assertCanDownload(ctx.user, resource);
 
       if (resource.githubUrl && !resource.storagePath) {
+        await logAudit({
+          actorId: ctx.user.id,
+          action: "resource.download",
+          targetType: "resource",
+          targetId: resource.id,
+          metadata: { title: resource.title, kind: "github" },
+          req: ctx.req,
+        });
         return {
           url: resource.githubUrl,
           kind: "github" as const,
@@ -306,6 +376,14 @@ export const resourcesRouter = router({
           message: error?.message ?? "Falha ao gerar URL de download.",
         });
       }
+      await logAudit({
+        actorId: ctx.user.id,
+        action: "resource.download",
+        targetType: "resource",
+        targetId: resource.id,
+        metadata: { title: resource.title, fileName: resource.originalFileName },
+        req: ctx.req,
+      });
       return {
         url: data.signedUrl,
         kind: "storage" as const,
