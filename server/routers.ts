@@ -1,4 +1,5 @@
 import { accessRequestRouter } from "./_core/accessRequestRouter";
+import { adminRouter } from "./_core/adminRouter";
 import { contactRouter } from "./_core/contactRouter";
 import { createSupabaseServer } from "./_core/supabase";
 import { systemRouter } from "./_core/systemRouter";
@@ -9,6 +10,7 @@ export const appRouter = router({
   system: systemRouter,
   contact: contactRouter,
   accessRequest: accessRequestRouter,
+  admin: adminRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(async ({ ctx }) => {

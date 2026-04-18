@@ -1,7 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { LOGIN_PATH } from "@/const";
 import { useSeo } from "@/lib/seo";
 import { Link } from "wouter";
 
@@ -95,11 +94,11 @@ export default function Portal() {
             <div className="rounded-lg border border-gold/40 bg-white p-6">
               <h2 className="text-xl text-navy mb-2">Acesso administrativo</h2>
               <p className="text-gray-700 mb-4">
-                O painel administrativo (gerenciar pedidos, usuários e recursos)
-                será liberado na próxima fase.
+                Gerencie pedidos de acesso, níveis de usuários e marque
+                clientes em operação.
               </p>
-              <Button asChild variant="outline">
-                <a href={LOGIN_PATH}>Voltar ao login</a>
+              <Button asChild>
+                <Link href="/admin">Abrir painel administrativo</Link>
               </Button>
             </div>
           )}
