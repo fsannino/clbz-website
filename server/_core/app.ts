@@ -1,4 +1,4 @@
-import express, { type Express } from "express";
+import express, { type Express, type NextFunction, type Request, type Response } from "express";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
@@ -18,8 +18,23 @@ export function createApiApp(): Express {
     createExpressMiddleware({
       router: appRouter,
       createContext,
+      onError({ error, path, type }) {
+        console.error(
+          `[tRPC] ${type} ${path ?? "<unknown>"} failed:`,
+          error,
+        );
+      },
     }),
   );
+
+  app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
+    console.error(`[express] ${req.method} ${req.url} crashed:`, err);
+    if (res.headersSent) return;
+    res.status(500).json({
+      error: "internal_server_error",
+      message: err instanceof Error ? err.message : String(err),
+    });
+  });
 
   return app;
 }
