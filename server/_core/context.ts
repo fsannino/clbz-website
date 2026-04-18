@@ -55,7 +55,7 @@ export async function createContext(
       user = record ?? null;
     }
   } catch (error) {
-    console.warn("[Auth] Failed to resolve session:", error);
+    console.error("[Auth] Failed to resolve session:", error);
     user = null;
   }
 

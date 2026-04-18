@@ -1,9 +1,15 @@
 import "dotenv/config";
 import { createApiApp } from "../server/_core/app";
 
-// Build the Express app once per cold start; Vercel's Node runtime
-// reuses the instance across invocations. Express apps are valid
-// Node request handlers, so exporting it directly works.
+// Stray rejections / throws would otherwise make Vercel kill the
+// worker with FUNCTION_INVOCATION_FAILED and no stack trace.
+process.on("unhandledRejection", (reason) => {
+  console.error("[process] unhandledRejection:", reason);
+});
+process.on("uncaughtException", (err) => {
+  console.error("[process] uncaughtException:", err);
+});
+
 const app = createApiApp();
 
 export default app;
