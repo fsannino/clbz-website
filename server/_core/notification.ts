@@ -1,4 +1,6 @@
 import { TRPCError } from "@trpc/server";
+import { Resend } from "resend";
+import { CONTACT } from "@shared/const";
 import { ENV } from "./env";
 
 export type NotificationPayload = {
@@ -9,21 +11,10 @@ export type NotificationPayload = {
 const TITLE_MAX_LENGTH = 1200;
 const CONTENT_MAX_LENGTH = 20000;
 
-const trimValue = (value: string): string => value.trim();
 const isNonEmptyString = (value: unknown): value is string =>
   typeof value === "string" && value.trim().length > 0;
 
-const buildEndpointUrl = (baseUrl: string): string => {
-  const normalizedBase = baseUrl.endsWith("/")
-    ? baseUrl
-    : `${baseUrl}/`;
-  return new URL(
-    "webdevtoken.v1.WebDevService/SendNotification",
-    normalizedBase
-  ).toString();
-};
-
-const validatePayload = (input: NotificationPayload): NotificationPayload => {
+function validatePayload(input: NotificationPayload): NotificationPayload {
   if (!isNonEmptyString(input.title)) {
     throw new TRPCError({
       code: "BAD_REQUEST",
@@ -36,79 +27,71 @@ const validatePayload = (input: NotificationPayload): NotificationPayload => {
       message: "Notification content is required.",
     });
   }
-
-  const title = trimValue(input.title);
-  const content = trimValue(input.content);
-
+  const title = input.title.trim();
+  const content = input.content.trim();
   if (title.length > TITLE_MAX_LENGTH) {
     throw new TRPCError({
       code: "BAD_REQUEST",
       message: `Notification title must be at most ${TITLE_MAX_LENGTH} characters.`,
     });
   }
-
   if (content.length > CONTENT_MAX_LENGTH) {
     throw new TRPCError({
       code: "BAD_REQUEST",
       message: `Notification content must be at most ${CONTENT_MAX_LENGTH} characters.`,
     });
   }
-
   return { title, content };
-};
+}
+
+let _resend: Resend | null = null;
+function getResend(): Resend | null {
+  if (!ENV.resendApiKey) return null;
+  if (!_resend) _resend = new Resend(ENV.resendApiKey);
+  return _resend;
+}
 
 /**
- * Dispatches a project-owner notification through the Manus Notification Service.
- * Returns `true` if the request was accepted, `false` when the upstream service
- * cannot be reached (callers can fall back to email/slack). Validation errors
- * bubble up as TRPC errors so callers can fix the payload.
+ * Sends a notification email to the project owner(s) via Resend.
+ * Returns true if the request was accepted, false on soft failure
+ * (misconfigured or upstream error) so callers can still complete
+ * the user-facing flow without blowing up.
  */
 export async function notifyOwner(
-  payload: NotificationPayload
+  payload: NotificationPayload,
 ): Promise<boolean> {
   const { title, content } = validatePayload(payload);
 
-  if (!ENV.forgeApiUrl) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Notification service URL is not configured.",
-    });
-  }
-
-  if (!ENV.forgeApiKey) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Notification service API key is not configured.",
-    });
-  }
-
-  const endpoint = buildEndpointUrl(ENV.forgeApiUrl);
-
-  try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        authorization: `Bearer ${ENV.forgeApiKey}`,
-        "content-type": "application/json",
-        "connect-protocol-version": "1",
-      },
-      body: JSON.stringify({ title, content }),
-    });
-
-    if (!response.ok) {
-      const detail = await response.text().catch(() => "");
-      console.warn(
-        `[Notification] Failed to notify owner (${response.status} ${response.statusText})${
-          detail ? `: ${detail}` : ""
-        }`
-      );
-      return false;
-    }
-
-    return true;
-  } catch (error) {
-    console.warn("[Notification] Error calling notification service:", error);
+  const resend = getResend();
+  if (!resend) {
+    console.warn("[Notification] RESEND_API_KEY not configured");
     return false;
   }
+
+  const from = ENV.resendFrom || `collab:Z <no-reply@${defaultDomain()}>`;
+  const to = ENV.notifyEmails.length > 0 ? ENV.notifyEmails : [CONTACT.email];
+
+  try {
+    const { error } = await resend.emails.send({
+      from,
+      to,
+      subject: title,
+      text: content,
+      replyTo: CONTACT.email,
+    });
+    if (error) {
+      console.warn("[Notification] Resend error:", error);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.warn("[Notification] Unexpected Resend failure:", error);
+    return false;
+  }
+}
+
+function defaultDomain(): string {
+  const email = CONTACT.email;
+  const at = email.lastIndexOf("@");
+  return at >= 0 ? email.slice(at + 1) : "clbz.com.br";
 }
