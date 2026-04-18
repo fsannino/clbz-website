@@ -1,28 +1,49 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import {
+  boolean,
+  pgEnum,
+  pgTable,
+  serial,
+  text,
+  timestamp,
+  uuid,
+  varchar,
+} from "drizzle-orm/pg-core";
 
 /**
- * Core user table backing auth flow.
- * Extend this file with additional tables as your product grows.
- * Columns use camelCase to match both database fields and generated types.
+ * Access tiers for the client area.
+ * - pending: signed up, awaiting admin approval
+ * - client: regular client, full portal access
+ * - active_client: client currently in operation, can unlock starred resources
+ * - admin: full admin panel access
  */
-export const users = mysqlTable("users", {
-  /**
-   * Surrogate primary key. Auto-incremented numeric value managed by the database.
-   * Use this for relations between tables.
-   */
-  id: int("id").autoincrement().primaryKey(),
-  /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
+export const userRole = pgEnum("user_role", [
+  "pending",
+  "client",
+  "active_client",
+  "admin",
+]);
+
+/**
+ * One row per Supabase Auth user, keyed by supabaseId (auth.users.id).
+ */
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  supabaseId: uuid("supabase_id").notNull().unique(),
+  email: varchar("email", { length: 320 }).notNull(),
   name: text("name"),
-  email: varchar("email", { length: 320 }),
-  loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-  lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  company: text("company"),
+  role: userRole("role").default("pending").notNull(),
+  isActiveClient: boolean("is_active_client").default(false).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  lastSignedIn: timestamp("last_signed_in", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
-
-// TODO: Add your tables here

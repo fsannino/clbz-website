@@ -19,6 +19,8 @@ const InsightArticle = lazy(() => import("./pages/InsightArticle"));
 const ChecklistProntidao = lazy(() => import("./pages/ChecklistProntidao"));
 const Parcerias = lazy(() => import("./pages/Parcerias"));
 const Contato = lazy(() => import("./pages/Contato"));
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
 
 function RouteFallback() {
   return (
@@ -49,6 +51,8 @@ function Router() {
         <Route path="/recursos/checklist-prontidao" component={ChecklistProntidao} />
         <Route path="/parcerias" component={Parcerias} />
         <Route path="/contato" component={Contato} />
+        <Route path="/login" component={Login} />
+        <Route path="/signup" component={Signup} />
         {/* Redirects from old routes */}
         <Route path="/about" component={Sobre} />
         <Route path="/solutions" component={Servicos} />
