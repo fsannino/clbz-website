@@ -4,8 +4,7 @@
   "installCommand": "pnpm install",
   "framework": null,
   "rewrites": [
-    { "source": "/api/ping", "destination": "/api/ping" },
-    { "source": "/api/:path*", "destination": "/api/index" },
+    { "source": "/api/trpc/:path*", "destination": "/api/index" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
