@@ -1,7 +1,16 @@
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { InsertUser, User, users } from "../drizzle/schema";
+import {
+  categories,
+  InsertCategory,
+  InsertResource,
+  InsertUser,
+  resources,
+  User,
+  users,
+  userResourceOverrides,
+} from "../drizzle/schema";
 
 let _client: ReturnType<typeof postgres> | null = null;
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -152,4 +161,157 @@ export async function countUsersByRole(): Promise<
     out[row.role] = Number(row.count);
   }
   return out;
+}
+
+// ---------- categories ----------
+
+export async function listCategories() {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(categories)
+    .orderBy(categories.sortOrder, categories.name);
+}
+
+export async function createCategory(input: InsertCategory) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const [row] = await db.insert(categories).values(input).returning();
+  return row;
+}
+
+export async function updateCategory(
+  id: number,
+  patch: Partial<InsertCategory>,
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const [row] = await db
+    .update(categories)
+    .set(patch)
+    .where(eq(categories.id, id))
+    .returning();
+  return row;
+}
+
+export async function deleteCategory(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.delete(categories).where(eq(categories.id, id));
+}
+
+// ---------- resources ----------
+
+export async function listAllResources() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(resources).orderBy(desc(resources.createdAt));
+}
+
+export async function getResourceById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const rows = await db
+    .select()
+    .from(resources)
+    .where(eq(resources.id, id))
+    .limit(1);
+  return rows[0];
+}
+
+export async function listVisibleResources(user: User) {
+  const db = await getDb();
+  if (!db) return [];
+  const allowedTiers: Array<"client" | "active_client" | "admin"> =
+    user.role === "admin"
+      ? ["client", "active_client", "admin"]
+      : user.role === "active_client"
+        ? ["client", "active_client"]
+        : user.role === "client"
+          ? ["client"]
+          : [];
+
+  const base = allowedTiers.length
+    ? await db
+        .select()
+        .from(resources)
+        .where(inArray(resources.minTier, allowedTiers))
+        .orderBy(desc(resources.createdAt))
+    : [];
+
+  const overrides = await db
+    .select()
+    .from(userResourceOverrides)
+    .where(eq(userResourceOverrides.userId, user.id));
+
+  const revokedIds = new Set(
+    overrides.filter((o) => !o.granted).map((o) => o.resourceId),
+  );
+  const grantedIds = overrides
+    .filter((o) => o.granted)
+    .map((o) => o.resourceId);
+
+  const grantedRows = grantedIds.length
+    ? await db
+        .select()
+        .from(resources)
+        .where(inArray(resources.id, grantedIds))
+    : [];
+
+  const merged = new Map<number, (typeof base)[number]>();
+  for (const row of base) {
+    if (!revokedIds.has(row.id)) merged.set(row.id, row);
+  }
+  for (const row of grantedRows) {
+    merged.set(row.id, row);
+  }
+  return Array.from(merged.values()).sort(
+    (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+  );
+}
+
+export async function createResource(input: InsertResource) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const [row] = await db.insert(resources).values(input).returning();
+  return row;
+}
+
+export async function updateResource(
+  id: number,
+  patch: Partial<InsertResource>,
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const [row] = await db
+    .update(resources)
+    .set({ ...patch, updatedAt: new Date() })
+    .where(eq(resources.id, id))
+    .returning();
+  return row;
+}
+
+export async function deleteResource(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.delete(resources).where(eq(resources.id, id));
+}
+
+// ---------- overrides ----------
+
+export async function getOverride(userId: number, resourceId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const rows = await db
+    .select()
+    .from(userResourceOverrides)
+    .where(
+      and(
+        eq(userResourceOverrides.userId, userId),
+        eq(userResourceOverrides.resourceId, resourceId),
+      ),
+    )
+    .limit(1);
+  return rows[0];
 }

@@ -1,4 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
+import { AdminNav } from "@/components/AdminNav";
 import Layout from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -117,9 +118,11 @@ export default function Admin() {
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-6">
           <h1 className="text-3xl font-serif text-navy mb-2">Administração</h1>
-          <p className="text-gray-600 mb-8">
+          <p className="text-gray-600 mb-6">
             Gerencie os pedidos de acesso e os níveis dos usuários.
           </p>
+
+          <AdminNav />
 
           {stats && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

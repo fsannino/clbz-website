@@ -1,4 +1,5 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { parse as parseCookieHeader } from "cookie";
 import type { Request, Response } from "express";
 import { ENV } from "./env";
@@ -31,3 +32,24 @@ export function createSupabaseServer(req: Request, res: Response) {
     },
   });
 }
+
+let _admin: SupabaseClient | null = null;
+
+/**
+ * Server-only Supabase client authenticated with the service-role key.
+ * Bypasses RLS — never expose to the browser. Returns null if the
+ * service key is not configured (features that depend on it must
+ * degrade gracefully).
+ */
+export function createSupabaseAdmin(): SupabaseClient | null {
+  if (!ENV.supabaseUrl || !ENV.supabaseServiceRoleKey) return null;
+  if (!_admin) {
+    _admin = createClient(ENV.supabaseUrl, ENV.supabaseServiceRoleKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+  }
+  return _admin;
+}
+
+export const RESOURCES_BUCKET = "resources";
+

@@ -1,19 +1,11 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import * as db from "../db";
-import { createClient } from "@supabase/supabase-js";
-import { ENV } from "./env";
+import { createSupabaseAdmin } from "./supabase";
 import { adminProcedure, router } from "./trpc";
 
 const roleEnum = z.enum(["pending", "client", "active_client", "admin"]);
 const supabaseIdSchema = z.string().uuid();
-
-function getAdminClient() {
-  if (!ENV.supabaseUrl || !ENV.supabaseServiceRoleKey) return null;
-  return createClient(ENV.supabaseUrl, ENV.supabaseServiceRoleKey, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-}
 
 export const adminRouter = router({
   listUsers: adminProcedure
@@ -66,7 +58,7 @@ export const adminRouter = router({
       }
       await db.deleteUserBySupabaseId(input.supabaseId);
 
-      const admin = getAdminClient();
+      const admin = createSupabaseAdmin();
       if (admin) {
         const { error } = await admin.auth.admin.deleteUser(input.supabaseId);
         if (error) {

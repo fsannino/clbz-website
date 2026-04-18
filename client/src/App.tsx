@@ -23,6 +23,7 @@ const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Portal = lazy(() => import("./pages/Portal"));
 const Admin = lazy(() => import("./pages/Admin"));
+const AdminResources = lazy(() => import("./pages/AdminResources"));
 
 function RouteFallback() {
   return (
@@ -57,6 +58,7 @@ function Router() {
         <Route path="/signup" component={Signup} />
         <Route path="/portal" component={Portal} />
         <Route path="/admin" component={Admin} />
+        <Route path="/admin/resources" component={AdminResources} />
         {/* Redirects from old routes */}
         <Route path="/about" component={Sobre} />
         <Route path="/solutions" component={Servicos} />
