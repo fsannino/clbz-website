@@ -1,5 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { AdminNav } from "@/components/AdminNav";
+import { UserAccessDialog } from "@/components/admin/UserAccessDialog";
 import Layout from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,14 @@ export default function Admin() {
 
   const { user, loading } = useAuth({ redirectOnUnauthenticated: true });
   const [filter, setFilter] = useState<Role | "all">("all");
+  const [accessUser, setAccessUser] = useState<
+    null | {
+      id: number;
+      email: string;
+      name: string | null;
+      role: Role;
+    }
+  >(null);
 
   const utils = trpc.useUtils();
   const statsQuery = trpc.admin.stats.useQuery(undefined, {
@@ -233,22 +242,38 @@ export default function Admin() {
                         />
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          disabled={isSelf}
-                          onClick={() => {
-                            if (
-                              confirm(
-                                `Excluir definitivamente ${u.email}? Esta ação não pode ser desfeita.`,
-                              )
-                            ) {
-                              deleteMut.mutate({ supabaseId: u.supabaseId });
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              setAccessUser({
+                                id: u.id,
+                                email: u.email,
+                                name: u.name,
+                                role: u.role,
+                              })
                             }
-                          }}
-                        >
-                          Excluir
-                        </Button>
+                          >
+                            Acessos
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={isSelf}
+                            onClick={() => {
+                              if (
+                                confirm(
+                                  `Excluir definitivamente ${u.email}? Esta ação não pode ser desfeita.`,
+                                )
+                              ) {
+                                deleteMut.mutate({ supabaseId: u.supabaseId });
+                              }
+                            }}
+                          >
+                            Excluir
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
@@ -258,6 +283,10 @@ export default function Admin() {
           </div>
         </div>
       </section>
+      <UserAccessDialog
+        user={accessUser}
+        onClose={() => setAccessUser(null)}
+      />
     </Layout>
   );
 }

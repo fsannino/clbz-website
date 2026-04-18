@@ -24,7 +24,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useSeo } from "@/lib/seo";
 import { trpc } from "@/lib/trpc";
-import { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 type Tier = "client" | "active_client" | "admin";
@@ -83,6 +84,12 @@ export default function AdminResources() {
     },
     onError: (e) => toast.error(e.message),
   });
+  const moveCat = trpc.resources.moveCategory.useMutation({
+    onSuccess: () => utils.resources.listCategories.invalidate(),
+    onError: (e) => toast.error(e.message),
+  });
+
+  const [search, setSearch] = useState("");
 
   // Resource form
   const [rTitle, setRTitle] = useState("");
@@ -217,8 +224,18 @@ export default function AdminResources() {
   }
 
   const categories = categoriesQuery.data ?? [];
-  const resources = resourcesQuery.data ?? [];
+  const allResources = resourcesQuery.data ?? [];
   const catNameById = new Map(categories.map((c) => [c.id, c.name]));
+  const resources = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return allResources;
+    return allResources.filter(
+      (r) =>
+        r.title.toLowerCase().includes(q) ||
+        (r.description ?? "").toLowerCase().includes(q) ||
+        (r.originalFileName ?? "").toLowerCase().includes(q),
+    );
+  }, [allResources, search]);
 
   return (
     <Layout>
@@ -269,13 +286,39 @@ export default function AdminResources() {
                 Nenhuma categoria ainda.
               </p>
             ) : (
-              <ul className="flex flex-wrap gap-2">
-                {categories.map((c) => (
+              <ul className="flex flex-col gap-2">
+                {categories.map((c, idx) => (
                   <li
                     key={c.id}
-                    className="flex items-center gap-2 border border-navy/10 rounded-md px-3 py-1 bg-cream/40"
+                    className="flex items-center gap-2 border border-navy/10 rounded-md px-3 py-2 bg-cream/40"
                   >
-                    <span className="text-sm text-navy">{c.name}</span>
+                    <div className="flex flex-col">
+                      <button
+                        type="button"
+                        disabled={idx === 0 || moveCat.isPending}
+                        onClick={() =>
+                          moveCat.mutate({ id: c.id, direction: "up" })
+                        }
+                        className="text-gray-500 hover:text-navy disabled:opacity-30"
+                        aria-label="Mover para cima"
+                      >
+                        <ChevronUp className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={
+                          idx === categories.length - 1 || moveCat.isPending
+                        }
+                        onClick={() =>
+                          moveCat.mutate({ id: c.id, direction: "down" })
+                        }
+                        className="text-gray-500 hover:text-navy disabled:opacity-30"
+                        aria-label="Mover para baixo"
+                      >
+                        <ChevronDown className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <span className="text-sm text-navy flex-1">{c.name}</span>
                     <span className="text-xs text-gray-500">/{c.slug}</span>
                     <button
                       type="button"
@@ -411,6 +454,14 @@ export default function AdminResources() {
           </div>
 
           {/* Lista de recursos */}
+          <div className="mb-4">
+            <Input
+              placeholder="Buscar por título, descrição ou arquivo…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="max-w-md"
+            />
+          </div>
           <div className="rounded-lg border border-navy/10 bg-white overflow-hidden">
             <Table>
               <TableHeader>

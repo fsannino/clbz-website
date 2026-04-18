@@ -315,3 +315,73 @@ export async function getOverride(userId: number, resourceId: number) {
     .limit(1);
   return rows[0];
 }
+
+export async function listOverridesForUser(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(userResourceOverrides)
+    .where(eq(userResourceOverrides.userId, userId));
+}
+
+export async function upsertOverride(
+  userId: number,
+  resourceId: number,
+  granted: boolean,
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db
+    .insert(userResourceOverrides)
+    .values({ userId, resourceId, granted })
+    .onConflictDoUpdate({
+      target: [userResourceOverrides.userId, userResourceOverrides.resourceId],
+      set: { granted },
+    });
+}
+
+export async function clearOverride(userId: number, resourceId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db
+    .delete(userResourceOverrides)
+    .where(
+      and(
+        eq(userResourceOverrides.userId, userId),
+        eq(userResourceOverrides.resourceId, resourceId),
+      ),
+    );
+}
+
+export async function getUserById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const rows = await db.select().from(users).where(eq(users.id, id)).limit(1);
+  return rows[0];
+}
+
+export async function swapCategoryOrder(id: number, direction: "up" | "down") {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const all = await db
+    .select()
+    .from(categories)
+    .orderBy(categories.sortOrder, categories.name);
+  const idx = all.findIndex((c) => c.id === id);
+  if (idx === -1) return;
+  const targetIdx = direction === "up" ? idx - 1 : idx + 1;
+  if (targetIdx < 0 || targetIdx >= all.length) return;
+
+  // Normalize to i * 10 so adjacent swaps never collide.
+  const order = all.map((c) => c.id);
+  [order[idx], order[targetIdx]] = [order[targetIdx], order[idx]];
+  await Promise.all(
+    order.map((catId, i) =>
+      db
+        .update(categories)
+        .set({ sortOrder: i * 10 })
+        .where(eq(categories.id, catId)),
+    ),
+  );
+}

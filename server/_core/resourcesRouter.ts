@@ -107,6 +107,18 @@ export const resourcesRouter = router({
       return { success: true } as const;
     }),
 
+  moveCategory: adminProcedure
+    .input(
+      z.object({
+        id: z.number().int().positive(),
+        direction: z.enum(["up", "down"]),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      await db.swapCategoryOrder(input.id, input.direction);
+      return { success: true } as const;
+    }),
+
   // ---------- admin-side resource listing ----------
   listAll: adminProcedure.query(async () => db.listAllResources()),
 

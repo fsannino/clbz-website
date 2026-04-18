@@ -2,10 +2,12 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import Layout from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useSeo } from "@/lib/seo";
 import { trpc } from "@/lib/trpc";
 import { CONTACT } from "@shared/const";
 import { Download, Github, Star } from "lucide-react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Link } from "wouter";
 
@@ -44,6 +46,8 @@ export default function Portal() {
   });
   const downloadMut = trpc.resources.getDownloadUrl.useMutation();
 
+  const [search, setSearch] = useState("");
+
   async function handleDownload(resourceId: number) {
     try {
       const res = await downloadMut.mutateAsync({ id: resourceId });
@@ -69,9 +73,19 @@ export default function Portal() {
   const role = user.role;
   const name = user.name || user.email;
   const label = ROLE_LABEL[role] ?? role;
-  const resources = resourcesQuery.data ?? [];
+  const allResources = resourcesQuery.data ?? [];
   const categories = categoriesQuery.data ?? [];
   const catNameById = new Map(categories.map((c) => [c.id, c.name]));
+
+  const resources = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return allResources;
+    return allResources.filter(
+      (r) =>
+        r.title.toLowerCase().includes(q) ||
+        (r.description ?? "").toLowerCase().includes(q),
+    );
+  }, [allResources, search]);
 
   const grouped = new Map<string, typeof resources>();
   for (const r of resources) {
@@ -140,15 +154,33 @@ export default function Portal() {
                 Materiais exclusivos
               </h2>
 
+              {allResources.length > 0 && (
+                <div className="mb-6">
+                  <Input
+                    placeholder="Buscar recursos…"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="max-w-md"
+                  />
+                </div>
+              )}
+
               {resourcesQuery.isLoading && (
                 <p className="text-gray-600">Carregando recursos…</p>
               )}
 
-              {!resourcesQuery.isLoading && resources.length === 0 && (
+              {!resourcesQuery.isLoading && allResources.length === 0 && (
                 <p className="text-gray-600">
                   Nenhum recurso disponível no momento.
                 </p>
               )}
+              {!resourcesQuery.isLoading &&
+                allResources.length > 0 &&
+                resources.length === 0 && (
+                  <p className="text-gray-600">
+                    Nenhum recurso encontrado para "{search}".
+                  </p>
+                )}
 
               {Array.from(grouped.entries()).map(([catName, items]) => (
                 <div key={catName} className="mb-8">

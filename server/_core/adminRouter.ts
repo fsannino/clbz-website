@@ -47,6 +47,27 @@ export const adminRouter = router({
       return { success: true } as const;
     }),
 
+  listOverrides: adminProcedure
+    .input(z.object({ userId: z.number().int().positive() }))
+    .query(async ({ input }) => db.listOverridesForUser(input.userId)),
+
+  setOverride: adminProcedure
+    .input(
+      z.object({
+        userId: z.number().int().positive(),
+        resourceId: z.number().int().positive(),
+        granted: z.boolean().nullable(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      if (input.granted === null) {
+        await db.clearOverride(input.userId, input.resourceId);
+      } else {
+        await db.upsertOverride(input.userId, input.resourceId, input.granted);
+      }
+      return { success: true } as const;
+    }),
+
   deleteUser: adminProcedure
     .input(z.object({ supabaseId: supabaseIdSchema }))
     .mutation(async ({ input, ctx }) => {
