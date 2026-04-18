@@ -16,7 +16,7 @@ async function getApp(): Promise<ExpressHandler | null> {
   if (cachedApp) return cachedApp;
   if (loadError) return null;
   try {
-    const mod = await import("../server/_core/app");
+    const mod = await import("../server/_core/app.js");
     cachedApp = mod.createApiApp() as unknown as ExpressHandler;
     return cachedApp;
   } catch (err) {
