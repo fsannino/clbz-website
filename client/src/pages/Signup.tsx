@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { LOGIN_PATH } from "@/const";
 import { supabase } from "@/lib/supabase";
 import { useSeo } from "@/lib/seo";
+import { trpc } from "@/lib/trpc";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Link } from "wouter";
@@ -20,6 +21,7 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const notifyMutation = trpc.accessRequest.notify.useMutation();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -39,6 +41,15 @@ export default function Signup() {
       if (error) {
         toast.error(error.message || "Não foi possível cadastrar.");
         return;
+      }
+      try {
+        await notifyMutation.mutateAsync({
+          name: name.trim(),
+          email: email.trim(),
+          company: company.trim(),
+        });
+      } catch (err) {
+        console.warn("[Signup] admin notification failed:", err);
       }
       setDone(true);
     } finally {
