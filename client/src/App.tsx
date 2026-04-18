@@ -19,6 +19,13 @@ const InsightArticle = lazy(() => import("./pages/InsightArticle"));
 const ChecklistProntidao = lazy(() => import("./pages/ChecklistProntidao"));
 const Parcerias = lazy(() => import("./pages/Parcerias"));
 const Contato = lazy(() => import("./pages/Contato"));
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Portal = lazy(() => import("./pages/Portal"));
+const Admin = lazy(() => import("./pages/Admin"));
+const AdminResources = lazy(() => import("./pages/AdminResources"));
+const AdminAudit = lazy(() => import("./pages/AdminAudit"));
+const Privacidade = lazy(() => import("./pages/Privacidade"));
 
 function RouteFallback() {
   return (
@@ -49,6 +56,13 @@ function Router() {
         <Route path="/recursos/checklist-prontidao" component={ChecklistProntidao} />
         <Route path="/parcerias" component={Parcerias} />
         <Route path="/contato" component={Contato} />
+        <Route path="/login" component={Login} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/portal" component={Portal} />
+        <Route path="/admin" component={Admin} />
+        <Route path="/admin/resources" component={AdminResources} />
+        <Route path="/admin/audit" component={AdminAudit} />
+        <Route path="/privacidade" component={Privacidade} />
         {/* Redirects from old routes */}
         <Route path="/about" component={Sobre} />
         <Route path="/solutions" component={Servicos} />

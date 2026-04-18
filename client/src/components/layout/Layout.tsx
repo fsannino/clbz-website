@@ -4,10 +4,12 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { buildWhatsAppLink } from "@shared/const";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [location] = useLocation();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -85,6 +87,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </span>
               </Link>
             ))}
+            <Link href={isAuthenticated ? "/portal" : "/login"}>
+              <span className="text-[13px] font-medium text-gray-medium hover:text-navy transition-colors cursor-pointer">
+                {isAuthenticated ? "Portal" : "Entrar"}
+              </span>
+            </Link>
             <Link href="/contato">
               <Button className="bg-navy hover:bg-teal text-white text-[13px] font-semibold px-5 py-2 rounded-md transition-all">
                 Fale Conosco
@@ -126,7 +133,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       </div>
                     </Link>
                   ))}
-                  <div className="pt-4 mt-2 border-t border-border">
+                  <div className="pt-4 mt-2 border-t border-border flex flex-col gap-2">
+                    <Link href={isAuthenticated ? "/portal" : "/login"}>
+                      <Button variant="outline" className="w-full rounded-md">
+                        {isAuthenticated ? "Portal" : "Entrar"}
+                      </Button>
+                    </Link>
                     <Link href="/contato">
                       <Button className="w-full bg-navy hover:bg-teal text-white rounded-md">
                         Fale Conosco
@@ -218,7 +230,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* Bottom */}
           <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs">
             <span>© 2026 collab:Z — Collaborazione Assessoria. Todos os direitos reservados.</span>
-            <span className="text-white/40">Parceiro: ScrumStudy (ATP)</span>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/privacidade"
+                className="text-white/70 hover:text-gold transition-colors"
+              >
+                Política de Privacidade
+              </Link>
+              <span className="text-white/40">Parceiro: ScrumStudy (ATP)</span>
+            </div>
           </div>
         </div>
       </footer>
