@@ -27,10 +27,10 @@ export async function getDb() {
       _client = postgres(process.env.DATABASE_URL, {
         prepare: false,
         max: 1,
-        connect_timeout: 5,
-        idle_timeout: 10,
+        connect_timeout: 15,
+        idle_timeout: 30,
         connection: {
-          statement_timeout: 8000,
+          statement_timeout: 25000,
         },
       });
       _db = drizzle(_client);
@@ -115,7 +115,15 @@ export async function listUsers(
   const filtered = options.role
     ? base.where(eq(users.role, options.role))
     : base;
-  return filtered.orderBy(desc(users.createdAt)).limit(limit).offset(offset);
+  const t0 = Date.now();
+  const rows = await filtered
+    .orderBy(desc(users.createdAt))
+    .limit(limit)
+    .offset(offset);
+  console.log(
+    `[db.listUsers] ${Date.now() - t0}ms rows=${rows.length} role=${options.role ?? "any"}`,
+  );
+  return rows;
 }
 
 export async function updateUserRole(
@@ -161,6 +169,7 @@ export async function countUsersByRole(): Promise<
     admin: 0,
   };
   if (!db) return empty;
+  const t0 = Date.now();
   const rows = await db
     .select({
       role: users.role,
@@ -168,6 +177,7 @@ export async function countUsersByRole(): Promise<
     })
     .from(users)
     .groupBy(users.role);
+  console.log(`[db.countUsersByRole] ${Date.now() - t0}ms`);
   const out = { ...empty };
   for (const row of rows) {
     out[row.role] = Number(row.count);
