@@ -1,13 +1,13 @@
 import { TRPCError } from "@trpc/server";
-import { accessRequestRouter } from "./_core/accessRequestRouter";
-import { adminRouter } from "./_core/adminRouter";
-import { logAudit } from "./_core/audit";
-import { contactRouter } from "./_core/contactRouter";
-import { resourcesRouter } from "./_core/resourcesRouter";
-import { createSupabaseAdmin, createSupabaseServer } from "./_core/supabase";
-import { systemRouter } from "./_core/systemRouter";
-import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
-import * as db from "./db";
+import { accessRequestRouter } from "./_core/accessRequestRouter.js";
+import { adminRouter } from "./_core/adminRouter.js";
+import { logAudit } from "./_core/audit.js";
+import { contactRouter } from "./_core/contactRouter.js";
+import { resourcesRouter } from "./_core/resourcesRouter.js";
+import { createSupabaseAdmin, createSupabaseServer } from "./_core/supabase.js";
+import { systemRouter } from "./_core/systemRouter.js";
+import { protectedProcedure, publicProcedure, router } from "./_core/trpc.js";
+import * as db from "./db.js";
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly

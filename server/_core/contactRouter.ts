@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CONTACT } from "@shared/const";
-import { notifyOwner } from "./notification";
-import { publicProcedure, router } from "./trpc";
+import { notifyOwner } from "./notification.js";
+import { publicProcedure, router } from "./trpc.js";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Informe seu nome").max(120),

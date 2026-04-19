@@ -1,19 +1,19 @@
 import { TRPCError } from "@trpc/server";
 import { nanoid } from "nanoid";
 import { z } from "zod";
-import * as db from "../db";
-import type { Resource, User } from "../../drizzle/schema";
-import { logAudit } from "./audit";
+import * as db from "../db.js";
+import type { Resource, User } from "../../drizzle/schema.js";
+import { logAudit } from "./audit.js";
 import {
   adminProcedure,
   protectedProcedure,
   publicProcedure,
   router,
-} from "./trpc";
+} from "./trpc.js";
 import {
   createSupabaseAdmin,
   RESOURCES_BUCKET,
-} from "./supabase";
+} from "./supabase.js";
 
 const minTierEnum = z.enum(["client", "active_client", "admin"]);
 const MAX_SIZE_BYTES = 200 * 1024 * 1024;

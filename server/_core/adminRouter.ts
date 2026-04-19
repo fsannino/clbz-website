@@ -1,9 +1,9 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import * as db from "../db";
-import { logAudit } from "./audit";
-import { createSupabaseAdmin } from "./supabase";
-import { adminProcedure, router } from "./trpc";
+import * as db from "../db.js";
+import { logAudit } from "./audit.js";
+import { createSupabaseAdmin } from "./supabase.js";
+import { adminProcedure, router } from "./trpc.js";
 
 const roleEnum = z.enum(["pending", "client", "active_client", "admin"]);
 const supabaseIdSchema = z.string().uuid();
