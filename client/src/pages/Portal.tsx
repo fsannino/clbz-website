@@ -102,6 +102,19 @@ export default function Portal() {
     }
   }
 
+  const allResources = resourcesQuery.data ?? [];
+  const categories = categoriesQuery.data ?? [];
+
+  const resources = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return allResources;
+    return allResources.filter(
+      (r) =>
+        r.title.toLowerCase().includes(q) ||
+        (r.description ?? "").toLowerCase().includes(q),
+    );
+  }, [allResources, search]);
+
   if (loading || !user) {
     return (
       <Layout>
@@ -117,19 +130,7 @@ export default function Portal() {
   const role = user.role;
   const name = user.name || user.email;
   const label = ROLE_LABEL[role] ?? role;
-  const allResources = resourcesQuery.data ?? [];
-  const categories = categoriesQuery.data ?? [];
   const catNameById = new Map(categories.map((c) => [c.id, c.name]));
-
-  const resources = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return allResources;
-    return allResources.filter(
-      (r) =>
-        r.title.toLowerCase().includes(q) ||
-        (r.description ?? "").toLowerCase().includes(q),
-    );
-  }, [allResources, search]);
 
   const grouped = new Map<string, typeof resources>();
   for (const r of resources) {
