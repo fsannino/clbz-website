@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { SIGNUP_PATH } from "@/const";
 import { supabase } from "@/lib/supabase";
 import { useSeo } from "@/lib/seo";
-import { trpc } from "@/lib/trpc";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Link } from "wouter";
@@ -18,7 +17,6 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const utils = trpc.useUtils();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -30,11 +28,12 @@ export default function Login() {
       });
       if (error) {
         toast.error(error.message || "Não foi possível entrar.");
+        setLoading(false);
         return;
       }
-      await utils.auth.me.invalidate();
       window.location.href = "/portal";
-    } finally {
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao entrar.");
       setLoading(false);
     }
   }
