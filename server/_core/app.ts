@@ -1,7 +1,7 @@
 import express, { type Express, type NextFunction, type Request, type Response } from "express";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { appRouter } from "../routers";
-import { createContext } from "./context";
+import { appRouter } from "../routers.js";
+import { createContext } from "./context.js";
 
 /**
  * Builds the API-only Express app (tRPC). No Vite middleware,

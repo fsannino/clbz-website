@@ -1,5 +1,5 @@
 import type { Request } from "express";
-import * as db from "../db";
+import * as db from "../db.js";
 
 type AuditInput = {
   actorId: number | null;

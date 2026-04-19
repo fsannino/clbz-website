@@ -12,7 +12,7 @@ import {
   User,
   users,
   userResourceOverrides,
-} from "../drizzle/schema";
+} from "../drizzle/schema.js";
 
 let _client: ReturnType<typeof postgres> | null = null;
 let _db: ReturnType<typeof drizzle> | null = null;

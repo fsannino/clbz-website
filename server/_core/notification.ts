@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { Resend } from "resend";
 import { CONTACT } from "@shared/const";
-import { ENV } from "./env";
+import { ENV } from "./env.js";
 
 export type NotificationPayload = {
   title: string;

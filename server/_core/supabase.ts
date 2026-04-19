@@ -2,7 +2,7 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { parse as parseCookieHeader } from "cookie";
 import type { Request, Response } from "express";
-import { ENV } from "./env";
+import { ENV } from "./env.js";
 
 /**
  * Builds a Supabase server client bound to the current Express request/response

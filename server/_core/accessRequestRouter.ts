@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { CONTACT } from "@shared/const";
-import { ENV } from "./env";
-import { notifyOwner } from "./notification";
-import { publicProcedure, router } from "./trpc";
+import { ENV } from "./env.js";
+import { notifyOwner } from "./notification.js";
+import { publicProcedure, router } from "./trpc.js";
 
 const requestSchema = z.object({
   name: z.string().trim().min(2, "Informe seu nome").max(120),
