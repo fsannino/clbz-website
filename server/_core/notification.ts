@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { Resend } from "resend";
-import { CONTACT } from "@shared/const";
+import { CONTACT } from "../../shared/const.js";
 import { ENV } from "./env.js";
 
 export type NotificationPayload = {

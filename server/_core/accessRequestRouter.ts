@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CONTACT } from "@shared/const";
+import { CONTACT } from "../../shared/const.js";
 import { ENV } from "./env.js";
 import { notifyOwner } from "./notification.js";
 import { publicProcedure, router } from "./trpc.js";
