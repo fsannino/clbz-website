@@ -18,7 +18,11 @@ let _client: ReturnType<typeof postgres> | null = null;
 let _db: ReturnType<typeof drizzle> | null = null;
 
 export async function getDb() {
-  if (!_db && process.env.DATABASE_URL) {
+  if (!_db) {
+    if (!process.env.DATABASE_URL) {
+      console.error("[Database] DATABASE_URL is not set");
+      return null;
+    }
     try {
       _client = postgres(process.env.DATABASE_URL, {
         prepare: false,
@@ -30,8 +34,9 @@ export async function getDb() {
         },
       });
       _db = drizzle(_client);
+      console.log("[Database] Connected");
     } catch (error) {
-      console.warn("[Database] Failed to connect:", error);
+      console.error("[Database] Failed to connect:", error);
       _client = null;
       _db = null;
     }

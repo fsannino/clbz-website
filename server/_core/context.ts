@@ -23,33 +23,64 @@ export async function createContext(
 ): Promise<TrpcContext> {
   let user: User | null = null;
 
+  const cookieHeader = opts.req.headers.cookie ?? "";
+  const hasSupabaseCookie = /sb-[^=]+-auth-token/.test(cookieHeader);
+  console.log(
+    `[Auth] createContext: path=${opts.req.path} hasSupabaseCookie=${hasSupabaseCookie} cookieLen=${cookieHeader.length}`,
+  );
+
   try {
     const supabase = createSupabaseServer(opts.req, opts.res);
-    const {
-      data: { user: authUser },
-    } = await supabase.auth.getUser();
+    const { data, error: authError } = await supabase.auth.getUser();
+    const authUser = data?.user ?? null;
+
+    if (authError) {
+      console.error(
+        `[Auth] supabase.auth.getUser error: ${authError.message} (status=${authError.status})`,
+      );
+    }
+    console.log(
+      `[Auth] authUser: id=${authUser?.id ?? "null"} email=${authUser?.email ?? "null"}`,
+    );
 
     if (authUser?.id && authUser.email) {
       let record = await db.getUserBySupabaseId(authUser.id);
+      console.log(
+        `[Auth] db.getUserBySupabaseId -> ${record ? `found id=${record.id} role=${record.role}` : "undefined"}`,
+      );
 
       if (!record) {
         const initialRole = resolveInitialRole(authUser.email);
-        await db.upsertUser({
-          supabaseId: authUser.id,
-          email: authUser.email,
-          name: (authUser.user_metadata?.name as string | undefined) ?? null,
-          company:
-            (authUser.user_metadata?.company as string | undefined) ?? null,
-          role: initialRole,
-          lastSignedIn: new Date(),
-        });
-        record = await db.getUserBySupabaseId(authUser.id);
+        console.log(
+          `[Auth] upserting new user email=${authUser.email} role=${initialRole}`,
+        );
+        try {
+          await db.upsertUser({
+            supabaseId: authUser.id,
+            email: authUser.email,
+            name: (authUser.user_metadata?.name as string | undefined) ?? null,
+            company:
+              (authUser.user_metadata?.company as string | undefined) ?? null,
+            role: initialRole,
+            lastSignedIn: new Date(),
+          });
+          record = await db.getUserBySupabaseId(authUser.id);
+          console.log(
+            `[Auth] post-upsert record: ${record ? `id=${record.id}` : "still undefined"}`,
+          );
+        } catch (upsertErr) {
+          console.error("[Auth] upsertUser failed:", upsertErr);
+        }
       } else {
-        await db.upsertUser({
-          supabaseId: authUser.id,
-          email: authUser.email,
-          lastSignedIn: new Date(),
-        });
+        try {
+          await db.upsertUser({
+            supabaseId: authUser.id,
+            email: authUser.email,
+            lastSignedIn: new Date(),
+          });
+        } catch (upsertErr) {
+          console.error("[Auth] refresh upsertUser failed:", upsertErr);
+        }
       }
 
       user = record ?? null;
@@ -58,6 +89,8 @@ export async function createContext(
     console.error("[Auth] Failed to resolve session:", error);
     user = null;
   }
+
+  console.log(`[Auth] final ctx.user: ${user ? `id=${user.id}` : "null"}`);
 
   return {
     req: opts.req,
