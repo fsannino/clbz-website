@@ -67,11 +67,23 @@ export default function AdminResources() {
   // Category form
   const [newCatName, setNewCatName] = useState("");
   const [newCatSlug, setNewCatSlug] = useState("");
+  const [slugTouched, setSlugTouched] = useState(false);
+
+  function slugify(input: string): string {
+    return input
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
   const createCat = trpc.resources.createCategory.useMutation({
     onSuccess: () => {
       utils.resources.listCategories.invalidate();
       setNewCatName("");
       setNewCatSlug("");
+      setSlugTouched(false);
       toast.success("Categoria criada.");
     },
     onError: (e) => toast.error(e.message),
@@ -254,27 +266,39 @@ export default function AdminResources() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                createCat.mutate({
-                  name: newCatName.trim(),
-                  slug: newCatSlug.trim(),
-                });
+                const name = newCatName.trim();
+                const slug = (newCatSlug.trim() || slugify(name));
+                if (!name) {
+                  toast.error("Informe o nome da categoria.");
+                  return;
+                }
+                if (!slug) {
+                  toast.error("Nome sem caracteres válidos — ajuste ou preencha o slug.");
+                  return;
+                }
+                createCat.mutate({ name, slug });
               }}
               className="flex flex-col sm:flex-row gap-2 mb-6"
             >
               <Input
                 placeholder="Nome (ex: Metodologias)"
                 value={newCatName}
-                onChange={(e) => setNewCatName(e.target.value)}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setNewCatName(v);
+                  if (!slugTouched) setNewCatSlug(slugify(v));
+                }}
                 className="sm:flex-1"
               />
               <Input
-                placeholder="slug (ex: metodologias)"
+                placeholder="slug (auto)"
                 value={newCatSlug}
-                onChange={(e) =>
+                onChange={(e) => {
+                  setSlugTouched(true);
                   setNewCatSlug(
                     e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, "-"),
-                  )
-                }
+                  );
+                }}
                 className="sm:w-56"
               />
               <Button type="submit" disabled={createCat.isPending}>
