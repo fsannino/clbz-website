@@ -2,7 +2,10 @@ import { z } from "zod";
 import { CONTACT } from "../../shared/const.js";
 import { ENV } from "./env.js";
 import { notifyOwner } from "./notification.js";
+import { clientIp, enforceRateLimit } from "./rateLimit.js";
 import { publicProcedure, router } from "./trpc.js";
+
+const HOUR = 60 * 60 * 1000;
 
 const requestSchema = z.object({
   name: z.string().trim().min(2, "Informe seu nome").max(120),
@@ -25,7 +28,19 @@ function resolveTier(email: string): "admin" | "client" | "pending" {
 export const accessRequestRouter = router({
   notify: publicProcedure
     .input(requestSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      enforceRateLimit({
+        scope: "accessRequest.notify:ip",
+        max: 10,
+        windowMs: HOUR,
+        key: clientIp(ctx.req),
+      });
+      enforceRateLimit({
+        scope: "accessRequest.notify:email",
+        max: 3,
+        windowMs: HOUR,
+        key: input.email.toLowerCase(),
+      });
       const tier = resolveTier(input.email);
       const statusLabel =
         tier === "admin"

@@ -1,7 +1,12 @@
 import { z } from "zod";
 import { CONTACT } from "../../shared/const.js";
 import { notifyOwner } from "./notification.js";
+import { clientIp, enforceRateLimit } from "./rateLimit.js";
 import { publicProcedure, router } from "./trpc.js";
+
+const MINUTE = 60_000;
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Informe seu nome").max(120),
@@ -39,7 +44,20 @@ async function safeNotify(title: string, content: string): Promise<boolean> {
 export const contactRouter = router({
   send: publicProcedure
     .input(contactSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      const ip = clientIp(ctx.req);
+      enforceRateLimit({
+        scope: "contact.send:ip",
+        max: 5,
+        windowMs: HOUR,
+        key: ip,
+      });
+      enforceRateLimit({
+        scope: "contact.send:email",
+        max: 5,
+        windowMs: HOUR,
+        key: input.email.toLowerCase(),
+      });
       const title = truncate(
         `[Contato site] ${input.subject} — ${input.name}`,
         200,
@@ -67,7 +85,19 @@ export const contactRouter = router({
 
   subscribeNewsletter: publicProcedure
     .input(newsletterSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      enforceRateLimit({
+        scope: "newsletter:ip",
+        max: 10,
+        windowMs: DAY,
+        key: clientIp(ctx.req),
+      });
+      enforceRateLimit({
+        scope: "newsletter:email",
+        max: 3,
+        windowMs: DAY,
+        key: input.email.toLowerCase(),
+      });
       const title = `[Newsletter Change Pulse] ${input.email}`;
       const content = [
         `Novo cadastro na newsletter Change Pulse.`,
@@ -85,7 +115,19 @@ export const contactRouter = router({
 
   requestResource: publicProcedure
     .input(resourceSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      enforceRateLimit({
+        scope: "requestResource:ip",
+        max: 10,
+        windowMs: HOUR,
+        key: clientIp(ctx.req),
+      });
+      enforceRateLimit({
+        scope: "requestResource:email",
+        max: 5,
+        windowMs: HOUR,
+        key: input.email.toLowerCase(),
+      });
       const title = `[Download recurso] ${truncate(input.resourceTitle, 140)}`;
       const content = [
         `Solicitação de download de recurso gratuito.`,
