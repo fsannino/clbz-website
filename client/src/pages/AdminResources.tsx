@@ -207,6 +207,20 @@ export default function AdminResources() {
     }
   }
 
+  const categories = categoriesQuery.data ?? [];
+  const allResources = resourcesQuery.data ?? [];
+  const catNameById = new Map(categories.map((c) => [c.id, c.name]));
+  const resources = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return allResources;
+    return allResources.filter(
+      (r) =>
+        r.title.toLowerCase().includes(q) ||
+        (r.description ?? "").toLowerCase().includes(q) ||
+        (r.originalFileName ?? "").toLowerCase().includes(q),
+    );
+  }, [allResources, search]);
+
   if (loading) {
     return (
       <Layout>
@@ -234,20 +248,6 @@ export default function AdminResources() {
       </Layout>
     );
   }
-
-  const categories = categoriesQuery.data ?? [];
-  const allResources = resourcesQuery.data ?? [];
-  const catNameById = new Map(categories.map((c) => [c.id, c.name]));
-  const resources = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return allResources;
-    return allResources.filter(
-      (r) =>
-        r.title.toLowerCase().includes(q) ||
-        (r.description ?? "").toLowerCase().includes(q) ||
-        (r.originalFileName ?? "").toLowerCase().includes(q),
-    );
-  }, [allResources, search]);
 
   return (
     <Layout>
