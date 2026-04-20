@@ -17,6 +17,14 @@ import {
 let _client: ReturnType<typeof postgres> | null = null;
 let _db: ReturnType<typeof drizzle> | null = null;
 
+export function resetDb() {
+  if (_client) {
+    _client.end({ timeout: 1 }).catch(() => {});
+  }
+  _client = null;
+  _db = null;
+}
+
 export async function getDb() {
   if (!_db) {
     if (!process.env.DATABASE_URL) {
@@ -32,6 +40,7 @@ export async function getDb() {
         connection: {
           statement_timeout: 25000,
         },
+        onnotice: () => {},
       });
       _db = drizzle(_client);
       console.log("[Database] Connected");

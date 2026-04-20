@@ -25,11 +25,11 @@ function extractUserAgent(req: Request | undefined): string | null {
 }
 
 /**
- * Fire-and-forget audit log entry. Never throws: failures are logged
- * but the originating request still succeeds.
+ * Fire-and-forget audit log entry. Never throws or blocks: failures are
+ * logged but the originating request still succeeds immediately.
  */
-export async function logAudit(input: AuditInput): Promise<void> {
-  await db.insertAudit({
+export function logAudit(input: AuditInput): void {
+  db.insertAudit({
     actorId: input.actorId,
     action: input.action,
     targetType: input.targetType ?? null,
@@ -37,5 +37,7 @@ export async function logAudit(input: AuditInput): Promise<void> {
     metadata: (input.metadata as unknown as null | object) ?? null,
     ip: extractIp(input.req),
     userAgent: extractUserAgent(input.req),
+  }).catch((err) => {
+    console.warn("[audit] insertAudit failed:", err);
   });
 }
