@@ -93,7 +93,7 @@ export default function Sobre() {
             <div>
               <h3 className="font-display text-2xl text-navy mb-1">Fabiano Sannino</h3>
               <p className="text-teal font-semibold text-sm mb-4">Fundador & CEO</p>
-              <p className="text-sm text-gray-medium mb-3">Consultor sênior com expertise em gestão de mudanças, governança corporativa e transformação organizacional. Experiência em grandes empresas como Teleperformance. Facilitador certificado LEGO® SERIOUS PLAY®. Acadêmico de Direito com interesse na interseção entre tecnologia, IA e marcos regulatórios.</p>
+              <p className="text-sm text-gray-medium mb-3">Executivo Sênior e Consultor de Gestão com mais de 20 anos liderando transformação corporativa em larga escala, execução estratégica, mudança organizacional e integrações de M&amp;A multi-países em corporações globais. Histórico comprovado na concepção e execução de agendas de transformação, gestão de portfólios estratégicos complexos e assessoria a líderes C-level em governança, redesenho de modelo operacional, integração cultural e criação de valor pós-fusão.</p>
               <div className="flex gap-2 flex-wrap">
                 <span className="badge-lamarsh inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">Change Management</span>
                 <span className="badge-collabz inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">LEGO® SERIOUS PLAY®</span>
