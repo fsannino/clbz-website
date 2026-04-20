@@ -54,14 +54,17 @@ export default function Home() {
     <Layout>
       {/* Hero */}
       <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-navy-dark">
-        <img
-          src="/images/hero-bg.jpg"
-          alt=""
-          aria-hidden="true"
-          loading="eager"
-          fetchPriority="high"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        <picture>
+          <source srcSet="/images/hero-bg.webp" type="image/webp" />
+          <img
+            src="/images/hero-bg.jpg"
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            fetchPriority="high"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </picture>
         {/* Left-to-right scrim so the headline keeps contrast while
             the image stays visible on the right half of the hero */}
         <div
