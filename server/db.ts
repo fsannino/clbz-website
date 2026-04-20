@@ -17,6 +17,8 @@ import {
 let _client: ReturnType<typeof postgres> | null = null;
 let _db: ReturnType<typeof drizzle> | null = null;
 
+const DB_CALL_TIMEOUT_MS = 20_000;
+
 export function resetDb() {
   if (_client) {
     _client.end({ timeout: 1 }).catch(() => {});
@@ -34,11 +36,12 @@ export async function getDb() {
     try {
       _client = postgres(process.env.DATABASE_URL, {
         prepare: false,
-        max: 1,
-        connect_timeout: 15,
-        idle_timeout: 30,
+        max: 3,
+        connect_timeout: 10,
+        idle_timeout: 20,
+        max_lifetime: 60,
         connection: {
-          statement_timeout: 25000,
+          statement_timeout: 15000,
         },
         onnotice: () => {},
       });
@@ -51,6 +54,29 @@ export async function getDb() {
     }
   }
   return _db;
+}
+
+async function withDbTimeout<T>(label: string, op: () => Promise<T>): Promise<T> {
+  let timer: NodeJS.Timeout | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(
+      () =>
+        reject(
+          new Error(
+            `[db] ${label} timed out after ${DB_CALL_TIMEOUT_MS}ms; resetting pool`,
+          ),
+        ),
+      DB_CALL_TIMEOUT_MS,
+    );
+  });
+  try {
+    return await Promise.race([op(), timeout]);
+  } catch (err) {
+    resetDb();
+    throw err;
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
 }
 
 export async function upsertUser(user: InsertUser): Promise<void> {
@@ -78,32 +104,36 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   if (user.isActiveClient !== undefined)
     updateSet.isActiveClient = user.isActiveClient;
 
-  await db
-    .insert(users)
-    .values({
-      supabaseId: user.supabaseId,
-      email: user.email,
-      name: user.name ?? null,
-      company: user.company ?? null,
-      role: user.role,
-      isActiveClient: user.isActiveClient,
-      lastSignedIn: user.lastSignedIn ?? new Date(),
-    })
-    .onConflictDoUpdate({
-      target: users.supabaseId,
-      set: updateSet,
-    });
+  await withDbTimeout("upsertUser", () =>
+    db
+      .insert(users)
+      .values({
+        supabaseId: user.supabaseId!,
+        email: user.email!,
+        name: user.name ?? null,
+        company: user.company ?? null,
+        role: user.role,
+        isActiveClient: user.isActiveClient,
+        lastSignedIn: user.lastSignedIn ?? new Date(),
+      })
+      .onConflictDoUpdate({
+        target: users.supabaseId,
+        set: updateSet,
+      }),
+  );
 }
 
 export async function getUserBySupabaseId(supabaseId: string) {
   const db = await getDb();
   if (!db) return undefined;
 
-  const result = await db
-    .select()
-    .from(users)
-    .where(eq(users.supabaseId, supabaseId))
-    .limit(1);
+  const result = await withDbTimeout("getUserBySupabaseId", () =>
+    db
+      .select()
+      .from(users)
+      .where(eq(users.supabaseId, supabaseId))
+      .limit(1),
+  );
   return result[0];
 }
 
@@ -125,10 +155,9 @@ export async function listUsers(
     ? base.where(eq(users.role, options.role))
     : base;
   const t0 = Date.now();
-  const rows = await filtered
-    .orderBy(desc(users.createdAt))
-    .limit(limit)
-    .offset(offset);
+  const rows = await withDbTimeout("listUsers", () =>
+    filtered.orderBy(desc(users.createdAt)).limit(limit).offset(offset),
+  );
   console.log(
     `[db.listUsers] ${Date.now() - t0}ms rows=${rows.length} role=${options.role ?? "any"}`,
   );
@@ -141,10 +170,12 @@ export async function updateUserRole(
 ): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
-  await db
-    .update(users)
-    .set({ role, updatedAt: new Date() })
-    .where(eq(users.supabaseId, supabaseId));
+  await withDbTimeout("updateUserRole", () =>
+    db
+      .update(users)
+      .set({ role, updatedAt: new Date() })
+      .where(eq(users.supabaseId, supabaseId)),
+  );
 }
 
 export async function setUserActiveClient(
@@ -153,10 +184,12 @@ export async function setUserActiveClient(
 ): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
-  await db
-    .update(users)
-    .set({ isActiveClient, updatedAt: new Date() })
-    .where(eq(users.supabaseId, supabaseId));
+  await withDbTimeout("setUserActiveClient", () =>
+    db
+      .update(users)
+      .set({ isActiveClient, updatedAt: new Date() })
+      .where(eq(users.supabaseId, supabaseId)),
+  );
 }
 
 export async function deleteUserBySupabaseId(
@@ -164,7 +197,9 @@ export async function deleteUserBySupabaseId(
 ): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
-  await db.delete(users).where(eq(users.supabaseId, supabaseId));
+  await withDbTimeout("deleteUserBySupabaseId", () =>
+    db.delete(users).where(eq(users.supabaseId, supabaseId)),
+  );
 }
 
 export async function countUsersByRole(): Promise<
@@ -179,13 +214,15 @@ export async function countUsersByRole(): Promise<
   };
   if (!db) return empty;
   const t0 = Date.now();
-  const rows = await db
-    .select({
-      role: users.role,
-      count: sql<number>`count(*)::int`,
-    })
-    .from(users)
-    .groupBy(users.role);
+  const rows = await withDbTimeout("countUsersByRole", () =>
+    db
+      .select({
+        role: users.role,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(users)
+      .groupBy(users.role),
+  );
   console.log(`[db.countUsersByRole] ${Date.now() - t0}ms`);
   const out = { ...empty };
   for (const row of rows) {
