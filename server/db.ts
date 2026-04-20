@@ -46,7 +46,6 @@ export async function getDb() {
         onnotice: () => {},
       });
       _db = drizzle(_client);
-      console.log("[Database] Connected");
     } catch (error) {
       console.error("[Database] Failed to connect:", error);
       _client = null;
@@ -154,14 +153,9 @@ export async function listUsers(
   const filtered = options.role
     ? base.where(eq(users.role, options.role))
     : base;
-  const t0 = Date.now();
-  const rows = await withDbTimeout("listUsers", () =>
+  return withDbTimeout("listUsers", () =>
     filtered.orderBy(desc(users.createdAt)).limit(limit).offset(offset),
   );
-  console.log(
-    `[db.listUsers] ${Date.now() - t0}ms rows=${rows.length} role=${options.role ?? "any"}`,
-  );
-  return rows;
 }
 
 export async function updateUserRole(
@@ -213,7 +207,6 @@ export async function countUsersByRole(): Promise<
     admin: 0,
   };
   if (!db) return empty;
-  const t0 = Date.now();
   const rows = await withDbTimeout("countUsersByRole", () =>
     db
       .select({
@@ -223,7 +216,6 @@ export async function countUsersByRole(): Promise<
       .from(users)
       .groupBy(users.role),
   );
-  console.log(`[db.countUsersByRole] ${Date.now() - t0}ms`);
   const out = { ...empty };
   for (const row of rows) {
     out[row.role] = Number(row.count);
