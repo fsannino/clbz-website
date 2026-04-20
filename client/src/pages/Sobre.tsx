@@ -87,9 +87,12 @@ export default function Sobre() {
           <p className="section-tag">Liderança</p>
           <h2 className="section-title">Nossa equipe</h2>
           <div className="bg-muted rounded-xl p-8 md:p-10 flex flex-col md:flex-row gap-8 mt-8">
-            <div className="w-24 h-24 md:w-28 md:h-28 rounded-xl flex items-center justify-center text-white font-display text-4xl shrink-0" style={{ background: "linear-gradient(135deg, #0B3D5C, #1A6E8E)" }}>
-              FS
-            </div>
+            <img
+              src="/images/fabiano-sannino.jpg"
+              alt="Fabiano Sannino"
+              className="w-24 h-24 md:w-28 md:h-28 rounded-xl object-cover shrink-0"
+              loading="lazy"
+            />
             <div>
               <h3 className="font-display text-2xl text-navy mb-1">Fabiano Sannino</h3>
               <p className="text-teal font-semibold text-sm mb-4">Fundador & CEO</p>
